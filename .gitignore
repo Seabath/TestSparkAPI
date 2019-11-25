@@ -1,0 +1,5 @@
+# ide related files
+.idea/*
+
+# build related files
+target/*
