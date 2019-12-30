@@ -33,7 +33,7 @@ public class Main {
                 .endpoints(() -> endpoints)
                 .generateDoc();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error while generating swagger.", e);
         }
 
 
