@@ -2,6 +2,7 @@ package app;
 
 import com.beerboy.ss.SparkSwagger;
 import com.beerboy.ss.rest.Endpoint;
+import dao.SimpleDAO;
 import endpoint.DeliveryEndpoint;
 import java.io.IOException;
 import java.util.Arrays;
@@ -16,9 +17,7 @@ public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        logger.trace("Starting service");
-
-
+        logger.trace("Starting spark service");
         Service sparkService = ignite();
         sparkService.port(Service.SPARK_DEFAULT_PORT);
 
@@ -37,6 +36,6 @@ public class Main {
         }
 
 
-        logger.trace("Service started");
+        logger.trace("Spark service started");
     }
 }

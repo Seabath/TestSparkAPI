@@ -3,7 +3,7 @@ package factory;
 import java.util.Date;
 import pojo.delivery.NewDeliveryRequest;
 import pojo.delivery.NewDeliveryResponse;
-import pojo.entities.DeliveryEntity;
+import pojo.entity.DeliveryEntity;
 
 public class DeliveryFactory {
 

@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pojo.delivery.NewDeliveryRequest;
 import pojo.delivery.NewDeliveryResponse;
-import pojo.entities.DeliveryEntity;
+import pojo.entity.DeliveryEntity;
 import spark.Request;
 import spark.Response;
 
