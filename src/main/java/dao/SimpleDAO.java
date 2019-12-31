@@ -35,42 +35,24 @@ public class SimpleDAO<T extends Serializable> {
             .createQuery("from " + clazz.getName(), clazz).list();
     }
 
-    public void save(Session session, T entity) {
+    public T save(Session session, T entity) {
         session.persist(entity);
+        return entity;
     }
 
-    public void saveOrUodate(Session session, T entity) {
+    public T saveOrUodate(Session session, T entity) {
         session.saveOrUpdate(entity);
+        return entity;
     }
 
-    public void delete(Session session, T entity) {
+    public T delete(Session session, T entity) {
         session.delete(entity);
-    }
-
-    public void deleteById(Session session, long id) {
-        final T entity = find(session, id);
-        delete(session, entity);
+        return entity;
     }
 
     public final Session openSession() {
         return getSessionFactory().openSession();
     }
-
-    public final Session openSessionWithTransaction() {
-        Session session = getSessionFactory().openSession();
-        session.beginTransaction();
-        return session;
-    }
-
-    public final void closeSession(Session session) {
-        session.close();
-    }
-
-    public final void closeSessionWithTransaction(Session session) {
-        session.getTransaction().commit();
-        session.close();
-    }
-
 
     private SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
