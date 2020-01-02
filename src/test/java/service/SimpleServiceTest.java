@@ -15,8 +15,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,7 +82,7 @@ class SimpleServiceTest {
     public void should_create_or_update_entity() {
         final String expected = "42L";
         when(mockedSession.beginTransaction()).thenReturn(mockedTransaction);
-        when(mockedDAO.saveOrUodate(any(), eq(expected))).thenReturn(expected);
+        when(mockedDAO.saveOrUpdate(any(), eq(expected))).thenReturn(expected);
         final String result = simpleService.createOrUpdate(expected);
 
         assertThat(result)
@@ -112,6 +111,40 @@ class SimpleServiceTest {
 
         assertThat(result)
             .isEqualTo(expected);
+    }
+
+
+    @Test
+    public void should_not_execute_query() {
+        final String expected = null;
+        final long id = 42L;
+        when(mockedDAO.find(any(), eq(id))).thenThrow(new IllegalStateException());
+        final String result = simpleService.get(id);
+
+        assertThat(result)
+            .isEqualTo(expected);
+    }
+
+    @Test
+    public void should_not_execute_query_with_transaction_transaction_null() {
+        final String expected = null;
+        final String result = simpleService.delete(42L);
+
+        assertThat(result)
+            .isEqualTo(expected);
+        verify(mockedTransaction, never()).rollback();
+    }
+
+    @Test
+    public void should_not_execute_query_with_transaction() {
+        final String expected = null;
+        when(mockedSession.beginTransaction()).thenReturn(mockedTransaction);
+        when(mockedDAO.delete(any(), eq(expected))).thenThrow(new IllegalStateException());
+        final String result = simpleService.delete(42L);
+
+        assertThat(result)
+            .isEqualTo(expected);
+        verify(mockedTransaction, only()).rollback();
     }
 
 }

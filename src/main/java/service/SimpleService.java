@@ -35,7 +35,7 @@ public class SimpleService<T extends Serializable> {
 
     public T createOrUpdate(T entity) {
         return this.executeQueryWithTransaction(session ->
-            tSimpleDAO.saveOrUodate(session, entity));
+            tSimpleDAO.saveOrUpdate(session, entity));
     }
 
     public T delete(T entity) {

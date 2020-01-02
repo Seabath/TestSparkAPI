@@ -15,10 +15,11 @@ import static spark.Service.ignite;
 public class Main {
 
     private static final Logger logger = LogManager.getLogger(Main.class);
+    private static Service sparkService;
 
     public static void main(String[] args) {
         logger.trace("Starting spark service");
-        Service sparkService = ignite();
+        sparkService = ignite();
         sparkService.port(Service.SPARK_DEFAULT_PORT);
 
 
@@ -27,15 +28,26 @@ public class Main {
             new DeliveryEndpoint()
         );
 
-        try {
-            SparkSwagger.of(sparkService, SparkSwagger.CONF_FILE_NAME)
-                .endpoints(() -> endpoints)
-                .generateDoc();
-        } catch (IOException e) {
-            logger.error("Error while generating swagger.", e);
-        }
+
+        final SparkSwagger sparkSwagger = SparkSwagger.of(sparkService, SparkSwagger.CONF_FILE_NAME)
+            .endpoints(() -> endpoints);
+
+        generateDoc(sparkSwagger);
 
 
         logger.trace("Spark service started");
+    }
+
+
+    static void generateDoc(SparkSwagger sparkSwagger) {
+        try {
+            sparkSwagger.generateDoc();
+        } catch (IOException e) {
+            logger.error("Error while generating swagger.", e);
+        }
+    }
+
+    static void stopServer() {
+        sparkService.stop();
     }
 }

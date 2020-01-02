@@ -40,7 +40,7 @@ public class SimpleDAO<T extends Serializable> {
         return entity;
     }
 
-    public T saveOrUodate(Session session, T entity) {
+    public T saveOrUpdate(Session session, T entity) {
         session.saveOrUpdate(entity);
         return entity;
     }

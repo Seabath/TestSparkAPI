@@ -1,12 +1,9 @@
 package endpoint;
 
-import com.beerboy.ss.SparkSwagger;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +18,7 @@ import pojo.delivery.NewDeliveryResponse;
 import pojo.entity.DeliveryEntity;
 import service.SimpleService;
 
-class DeliveryEndpointTest extends AbstractEndPointTest {
+class DeliveryEndpointTest extends AbstractEndPointT {
 
     private static DeliveryEndpoint endpoint;
     private static SimpleService mockedService;
