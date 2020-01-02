@@ -3,3 +3,6 @@
 
 # build related files
 target/*
+
+#log related files
+log/*

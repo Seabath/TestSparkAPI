@@ -59,7 +59,7 @@ public class SimpleDAO<T extends Serializable> {
             try {
                 StandardServiceRegistryBuilder configure = new StandardServiceRegistryBuilder()
                     .configure("hibernate.cfg.xml");
-                configure.applySetting("hibernate.connection.url", "jdbc:postgresql:" + DB_URL);
+                configure.applySetting("hibernate.connection.url", "jdbc:postgresql://" + DB_URL);
                 configure.applySetting("hibernate.connection.username", DB_USER);
                 configure.applySetting("hibernate.connection.password", DB_PASSWORD);
                 ServiceRegistry serviceRegistry = configure.build();
@@ -68,7 +68,7 @@ public class SimpleDAO<T extends Serializable> {
 
                 sessionFactory = metadata.getSessionFactoryBuilder().build();
             } catch (Throwable t) {
-                logger.error("Could initialize hibernate.");
+                logger.fatal("Could initialize hibernate.", t);
                 throw new ExceptionInInitializerError(t);
             }
         }

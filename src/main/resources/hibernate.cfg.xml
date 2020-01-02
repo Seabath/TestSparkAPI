@@ -20,6 +20,6 @@
 
 
 
-        <mapping class="entity.DeliveryEntity"/>
+        <mapping class="pojo.entity.DeliveryEntity"/>
     </session-factory>
 </hibernate-configuration>

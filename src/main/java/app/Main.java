@@ -2,8 +2,8 @@ package app;
 
 import com.beerboy.ss.SparkSwagger;
 import com.beerboy.ss.rest.Endpoint;
-import dao.SimpleDAO;
 import endpoint.DeliveryEndpoint;
+import endpoint.ExceptionEndpoint;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +23,9 @@ public class Main {
 
 
         final List<Endpoint> endpoints = Arrays.asList(
+            new ExceptionEndpoint(),
             new DeliveryEndpoint()
         );
-
 
         try {
             SparkSwagger.of(sparkService, SparkSwagger.CONF_FILE_NAME)

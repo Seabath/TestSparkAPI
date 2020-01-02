@@ -18,7 +18,7 @@ public class DeliveryFactory {
 
     public static NewDeliveryResponse build(DeliveryEntity deliveryEntity) {
         return NewDeliveryResponse.builder()
-            .date(new Date())
+            .date(deliveryEntity.getDate())
             .path(deliveryEntity.getPath())
             .version(deliveryEntity.getVersion())
             .platform(deliveryEntity.getPlatform())
