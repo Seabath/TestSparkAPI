@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class NewDeliveryRequest {
+public class PostDeliveryRequest {
 
     private String version;
     private String platform;

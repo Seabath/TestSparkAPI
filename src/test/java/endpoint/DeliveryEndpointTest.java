@@ -13,8 +13,8 @@ import static org.mockito.Matchers.eq;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import pojo.delivery.NewDeliveryRequest;
-import pojo.delivery.NewDeliveryResponse;
+import pojo.delivery.PostDeliveryRequest;
+import pojo.delivery.GetDeliveryResponse;
 import pojo.entity.DeliveryEntity;
 import service.SimpleService;
 
@@ -45,12 +45,12 @@ class DeliveryEndpointTest extends AbstractEndPointT {
         String path = "path";
         String version = "version";
         String platform = "platform";
-        NewDeliveryRequest request = NewDeliveryRequest.builder()
+        PostDeliveryRequest request = PostDeliveryRequest.builder()
             .path(path)
             .version(version)
             .platform(platform)
             .build();
-        NewDeliveryResponse expectedBody = NewDeliveryResponse.builder()
+        GetDeliveryResponse expectedBody = GetDeliveryResponse.builder()
             .path(path)
             .platform(platform)
             .version(version)
@@ -62,7 +62,7 @@ class DeliveryEndpointTest extends AbstractEndPointT {
 
         assertThat(response.getStatus())
             .isEqualTo(201);
-        assertThat(new Gson().fromJson(response.getBody(), NewDeliveryResponse.class))
+        assertThat(new Gson().fromJson(response.getBody(), GetDeliveryResponse.class))
             .isEqualToIgnoringNullFields(expectedBody);
     }
 
@@ -78,7 +78,7 @@ class DeliveryEndpointTest extends AbstractEndPointT {
             .version("version")
             .platform("platform")
             .build();
-        NewDeliveryResponse expectedBody = NewDeliveryResponse.builder()
+        GetDeliveryResponse expectedBody = GetDeliveryResponse.builder()
             .date(entity.getDate())
             .id(entity.getId())
             .path(entity.getPath())

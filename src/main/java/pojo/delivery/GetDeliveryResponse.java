@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class NewDeliveryResponse {
+public class GetDeliveryResponse {
 
     private Long id;
     private String version;

@@ -5,16 +5,14 @@ import static com.beerboy.ss.descriptor.EndpointDescriptor.endpointPath;
 import com.beerboy.ss.descriptor.MethodDescriptor;
 import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dao.SimpleDAO;
 import factory.DeliveryFactory;
-import java.text.DateFormat;
 import javassist.NotFoundException;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pojo.delivery.NewDeliveryRequest;
-import pojo.delivery.NewDeliveryResponse;
+import pojo.delivery.PostDeliveryRequest;
+import pojo.delivery.GetDeliveryResponse;
 import pojo.entity.DeliveryEntity;
 import service.SimpleService;
 import spark.Request;
@@ -37,12 +35,12 @@ public class DeliveryEndpoint implements Endpoint {
         sparkSwagger.endpoint(endpointPath(ENDPOINT_PATH), (q, a) -> logger.info("Received request for delivery."))
 
             .post(MethodDescriptor.path("")
-                    .withRequestType(NewDeliveryRequest.class)
-                    .withResponseType(NewDeliveryResponse.class)
+                    .withRequestType(PostDeliveryRequest.class)
+                    .withResponseType(GetDeliveryResponse.class)
                     .withDescription("Creates a new delivery.")
                 , this::createDelivery)
             .get(MethodDescriptor.path("/" + PARAM_ID)
-                .withResponseType(NewDeliveryResponse.class), this::getDelivery);
+                .withResponseType(GetDeliveryResponse.class), this::getDelivery);
     }
 
     @SneakyThrows
@@ -54,19 +52,19 @@ public class DeliveryEndpoint implements Endpoint {
             throw new NotFoundException("Delivery");
         }
 
-        final NewDeliveryResponse newDeliveryResponse = DeliveryFactory.build(deliveryEntity);
-        return new Gson().toJson(newDeliveryResponse);
+        final GetDeliveryResponse getDeliveryResponse = DeliveryFactory.build(deliveryEntity);
+        return new Gson().toJson(getDeliveryResponse);
     }
 
     private String createDelivery(Request request, Response response) {
-        NewDeliveryRequest newDeliveryRequest = new Gson().fromJson(request.body(), NewDeliveryRequest.class);
+        PostDeliveryRequest postDeliveryRequest = new Gson().fromJson(request.body(), PostDeliveryRequest.class);
 
-        DeliveryEntity entity = DeliveryFactory.build(newDeliveryRequest);
+        DeliveryEntity entity = DeliveryFactory.build(postDeliveryRequest);
         deliveryService.create(entity);
 
-        NewDeliveryResponse newDeliveryResponse = DeliveryFactory.build(entity);
+        GetDeliveryResponse getDeliveryResponse = DeliveryFactory.build(entity);
 
         response.status(201);
-        return new Gson().toJson(newDeliveryResponse);
+        return new Gson().toJson(getDeliveryResponse);
     }
 }
