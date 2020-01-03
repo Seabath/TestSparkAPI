@@ -17,9 +17,6 @@ class ExceptionEndpointTest extends AbstractEndPointTest {
 
     @BeforeAll
     public static void initService() {
-        ExceptionEndpoint endpoint = new ExceptionEndpoint();
-
-        sparkSwagger.endpoint(endpoint);
         sparkSwagger.getSpark().get(EXCEPTION_ROUTE, ExceptionEndpointTest::throwException);
         sparkSwagger.getSpark().get(NOT_FOUND_EXCEPTION_ROUTE, ExceptionEndpointTest::throwNotFoundException);
     }

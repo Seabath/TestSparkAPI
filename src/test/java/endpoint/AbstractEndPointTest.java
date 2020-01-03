@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import spark.Service;
 import static spark.Service.ignite;
@@ -16,20 +15,20 @@ public abstract class AbstractEndPointTest {
     private static Service sparkService;
     protected static SparkSwagger sparkSwagger;
 
+    private static boolean isStarted;
+
     @BeforeAll
     public static void initSpark() {
-        sparkService = ignite();
-        sparkService.port(TEST_DEFAULT_PORT);
+        if (!isStarted) {
+            sparkService = ignite();
+            sparkService.port(TEST_DEFAULT_PORT);
 
-        sparkSwagger = SparkSwagger.of(sparkService);
-        sparkSwagger
-            .endpoint(new ExceptionEndpoint());
-    }
+            sparkSwagger = SparkSwagger.of(sparkService);
+            sparkSwagger.endpoint(new ExceptionEndpoint());
 
-    @AfterAll
-    public static void tearDownSpark() {
-        sparkService.stop();
-        sparkService.awaitStop();
+            sparkService.awaitInitialization();
+            isStarted = true;
+        }
     }
 
 

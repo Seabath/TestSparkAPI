@@ -22,8 +22,9 @@ public class DeliveryEndpoint implements Endpoint {
 
     private static final Logger logger = LogManager.getLogger(DeliveryEndpoint.class);
 
-    public static final String ENDPOINT_PATH = "/delivery";
-    public static final String PARAM_ID = ":id";
+    public static final String DELIVERY_ENDPOINT_ROUTE = "/delivery";
+    private static final String PARAM_ID = ":id";
+
     private final SimpleService<DeliveryEntity> deliveryService;
 
     public DeliveryEndpoint() {
@@ -32,15 +33,16 @@ public class DeliveryEndpoint implements Endpoint {
 
     @Override
     public void bind(SparkSwagger sparkSwagger) {
-        sparkSwagger.endpoint(endpointPath(ENDPOINT_PATH), (q, a) -> logger.info("Received request for delivery."))
+        sparkSwagger.endpoint(endpointPath(DELIVERY_ENDPOINT_ROUTE), (q, a) -> logger.info("Received request for delivery:\nPath: {}\nBody: {}", q.pathInfo(), q.body()))
+
+            .get(MethodDescriptor.path("/" + PARAM_ID)
+                .withResponseType(GetDeliveryResponse.class), this::getDelivery)
 
             .post(MethodDescriptor.path("")
                     .withRequestType(PostDeliveryRequest.class)
                     .withResponseType(GetDeliveryResponse.class)
                     .withDescription("Creates a new delivery.")
-                , this::createDelivery)
-            .get(MethodDescriptor.path("/" + PARAM_ID)
-                .withResponseType(GetDeliveryResponse.class), this::getDelivery);
+                , this::createDelivery);
     }
 
     @SneakyThrows

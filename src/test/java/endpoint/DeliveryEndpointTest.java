@@ -57,7 +57,7 @@ class DeliveryEndpointTest extends AbstractEndPointTest {
             .build();
 
 
-        HttpResponse<String> response = testPost(DeliveryEndpoint.ENDPOINT_PATH, request);
+        HttpResponse<String> response = testPost(DeliveryEndpoint.DELIVERY_ENDPOINT_ROUTE, request);
 
 
         assertThat(response.getStatus())
@@ -88,7 +88,7 @@ class DeliveryEndpointTest extends AbstractEndPointTest {
 
         when(mockedService.get(eq(id))).thenReturn(entity);
 
-        HttpResponse<String> response = testGet(DeliveryEndpoint.ENDPOINT_PATH + "/" + id);
+        HttpResponse<String> response = testGet(DeliveryEndpoint.DELIVERY_ENDPOINT_ROUTE + "/" + id);
 
 
         assertThat(response.getStatus())
@@ -104,7 +104,7 @@ class DeliveryEndpointTest extends AbstractEndPointTest {
 
         when(mockedService.get(eq(id))).thenReturn(null);
 
-        HttpResponse<String> response = testGet(DeliveryEndpoint.ENDPOINT_PATH + "/" + id);
+        HttpResponse<String> response = testGet(DeliveryEndpoint.DELIVERY_ENDPOINT_ROUTE + "/" + id);
 
 
         assertThat(response.getStatus())

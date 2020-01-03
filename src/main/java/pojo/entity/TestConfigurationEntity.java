@@ -1,6 +1,7 @@
 package pojo.entity;
 
 import common.Status;
+import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Builder;
@@ -9,7 +10,7 @@ import lombok.Getter;
 @Getter
 @Entity
 @Table(name = "test_configuration")
-public class TestConfigurationEntity {
+public class TestConfigurationEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
