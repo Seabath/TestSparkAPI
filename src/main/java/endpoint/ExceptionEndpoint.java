@@ -16,10 +16,18 @@ public class ExceptionEndpoint implements Endpoint {
         final Service spark = sparkSwagger.getSpark();
 
         spark.exception(NotFoundException.class, this::handleNotFound);
+        spark.exception(Exception.class, this::handleDefaultException);
     }
+
 
     private void handleNotFound(NotFoundException t, Request request, Response response) {
         response.status(404);
-        response.body(t.getMessage() + " not found.");
+        response.body(new Gson().toJson(t.getMessage() + " not found."));
+    }
+
+
+    private void handleDefaultException(Exception t, Request request, Response response) {
+        response.status(500);
+        response.body(new Gson().toJson(t));
     }
 }

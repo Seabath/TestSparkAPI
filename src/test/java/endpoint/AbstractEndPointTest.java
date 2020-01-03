@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import spark.Service;
 import static spark.Service.ignite;
 
-public abstract class AbstractEndPointT {
+public abstract class AbstractEndPointTest {
 
     private static final int TEST_DEFAULT_PORT = Service.SPARK_DEFAULT_PORT;
     private static Service sparkService;

@@ -18,7 +18,7 @@ import pojo.delivery.GetDeliveryResponse;
 import pojo.entity.DeliveryEntity;
 import service.SimpleService;
 
-class DeliveryEndpointTest extends AbstractEndPointT {
+class DeliveryEndpointTest extends AbstractEndPointTest {
 
     private static DeliveryEndpoint endpoint;
     private static SimpleService mockedService;
