@@ -2,6 +2,7 @@ package pojo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,15 +30,20 @@ public class DeliveryEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
+    @OneToMany(mappedBy = "deliveryEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<TestConfigurationEntity> testConfigurationEntities;
+
     public DeliveryEntity() {
     }
 
     @Builder
-    public DeliveryEntity(Long id, String version, String platform, String path, Date date) {
+    public DeliveryEntity(Long id, String version, String platform, String path, Date date,
+                          Set<TestConfigurationEntity> testConfigurationEntities) {
         this.id = id;
         this.version = version;
         this.platform = platform;
         this.path = path;
         this.date = date;
+        this.testConfigurationEntities = testConfigurationEntities;
     }
 }
