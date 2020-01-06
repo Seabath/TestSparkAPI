@@ -32,7 +32,7 @@ public class TestSuiteEntity implements Serializable {
     @JoinColumn(name = "fk_test_configuration_entity_id", nullable = false)
     private TestConfigurationEntity testConfigurationEntity;
 
-    @OneToMany(mappedBy = "suiteEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "testSuiteEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<TestEntity> testEntities;
 
 

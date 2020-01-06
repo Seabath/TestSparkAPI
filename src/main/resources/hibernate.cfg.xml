@@ -20,6 +20,13 @@
 
 
 
+        <mapping class="pojo.entity.AttachmentEntity"/>
         <mapping class="pojo.entity.DeliveryEntity"/>
+        <mapping class="pojo.entity.DriverEntity"/>
+        <mapping class="pojo.entity.FailureEntity"/>
+        <mapping class="pojo.entity.TestConfigurationEntity"/>
+        <mapping class="pojo.entity.TestEntity"/>
+        <mapping class="pojo.entity.TestRunEntity"/>
+        <mapping class="pojo.entity.TestSuiteEntity"/>
     </session-factory>
 </hibernate-configuration>
