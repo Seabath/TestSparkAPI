@@ -8,6 +8,9 @@ import pojo.entity.DeliveryEntity;
 public class DeliveryFactory {
 
     public static DeliveryEntity build(PostDeliveryRequest postDeliveryRequest) {
+        if (postDeliveryRequest == null) {
+            return null;
+        }
         return DeliveryEntity.builder()
             .date(new Date())
             .path(postDeliveryRequest.getPath())
@@ -17,6 +20,9 @@ public class DeliveryFactory {
     }
 
     public static GetDeliveryResponse build(DeliveryEntity deliveryEntity) {
+        if (deliveryEntity == null) {
+            return null;
+        }
         return GetDeliveryResponse.builder()
             .date(deliveryEntity.getDate())
             .path(deliveryEntity.getPath())

@@ -8,6 +8,9 @@ import pojo.test.configuration.PostTestConfigurationRequest;
 
 public class TestConfigurationFactory {
     public static TestConfigurationEntity build(PostTestConfigurationRequest postTestConfigurationRequest, DeliveryEntity deliveryEntity) {
+        if (postTestConfigurationRequest == null) {
+            return null;
+        }
         return TestConfigurationEntity.builder()
             .deliveryEntity(deliveryEntity)
             .env(postTestConfigurationRequest.getEnv())
@@ -17,6 +20,9 @@ public class TestConfigurationFactory {
     }
 
     public static GetTestConfigurationResponse build(TestConfigurationEntity testConfigurationEntity) {
+        if (testConfigurationEntity == null) {
+            return null;
+        }
         return GetTestConfigurationResponse.builder()
             .id(testConfigurationEntity.getId())
             .getDeliveryResponse(DeliveryFactory.build(testConfigurationEntity.getDeliveryEntity()))
