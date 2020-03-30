@@ -5,6 +5,7 @@ import com.beerboy.ss.rest.Endpoint;
 import endpoint.DeliveryEndpoint;
 import endpoint.ExceptionEndpoint;
 import endpoint.TestConfigurationEndpoint;
+import endpoint.TestSuiteEndpoint;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +14,9 @@ import org.apache.logging.log4j.Logger;
 import spark.Service;
 import static spark.Service.ignite;
 
+/**
+ * Entry point of the service.
+ */
 public class Main {
 
     private static final Logger logger = LogManager.getLogger(Main.class);
@@ -27,7 +31,8 @@ public class Main {
         final List<Endpoint> endpoints = Arrays.asList(
             new ExceptionEndpoint(),
             new DeliveryEndpoint(),
-            new TestConfigurationEndpoint()
+            new TestConfigurationEndpoint(),
+            new TestSuiteEndpoint()
         );
 
 

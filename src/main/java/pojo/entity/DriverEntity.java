@@ -5,6 +5,9 @@ import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * For end to end tests, it's drivers on which you run your test.
+ */
 @Getter
 @Entity
 @Table(name = "attachment")

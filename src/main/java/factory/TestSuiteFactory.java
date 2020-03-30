@@ -5,9 +5,18 @@ import java.util.Date;
 import pojo.entity.TestConfigurationEntity;
 import pojo.entity.TestSuiteEntity;
 import pojo.test.suite.GetTestSuiteResponse;
-
+/**
+ * Factory to build TestSuiteEntity and response bodys related to TestSuiteEntity
+ */
 public class TestSuiteFactory {
 
+    /**
+     * Builds a default TestSuiteEntity.
+     * with its status as in progress and its date to actual date.
+     *
+     * @param testConfigurationEntity Body from a post request.
+     * @return TestSuiteEntity
+     */
     public static TestSuiteEntity build(TestConfigurationEntity testConfigurationEntity) {
         if (testConfigurationEntity == null) {
             return null;
@@ -19,7 +28,12 @@ public class TestSuiteFactory {
             .build();
     }
 
-
+    /**
+     * Builds a response from a TestSuiteEntity.
+     *
+     * @param testSuiteEntity Entity from the database.
+     * @return GetTestSuiteResponse to put in response body
+     */
     public static GetTestSuiteResponse build(TestSuiteEntity testSuiteEntity) {
         if (testSuiteEntity == null) {
             return null;

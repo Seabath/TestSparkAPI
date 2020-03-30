@@ -1,12 +1,21 @@
 package factory;
 
 import java.util.Date;
-import pojo.delivery.PostDeliveryRequest;
 import pojo.delivery.GetDeliveryResponse;
+import pojo.delivery.PostDeliveryRequest;
 import pojo.entity.DeliveryEntity;
 
+/**
+ * Factory to build DeliveryEntity and response bodys related to DeliveryEntity
+ */
 public class DeliveryFactory {
 
+    /**
+     * Builds a DeliveryEntity from a request's body
+     *
+     * @param postDeliveryRequest Body from a post request.
+     * @return DeliveryEntity
+     */
     public static DeliveryEntity build(PostDeliveryRequest postDeliveryRequest) {
         if (postDeliveryRequest == null) {
             return null;
@@ -19,6 +28,12 @@ public class DeliveryFactory {
             .build();
     }
 
+    /**
+     * Builds a response from a DeliveryEntity.
+     *
+     * @param deliveryEntity Body from a post request.
+     * @return GetDeliveryResponse to put in response body
+     */
     public static GetDeliveryResponse build(DeliveryEntity deliveryEntity) {
         if (deliveryEntity == null) {
             return null;

@@ -8,6 +8,9 @@ import spark.Request;
 import spark.Response;
 import spark.Service;
 
+/**
+ * Endpoint that handles all exceptions thrown by services.
+ */
 public class ExceptionEndpoint implements Endpoint {
 
 
@@ -20,12 +23,26 @@ public class ExceptionEndpoint implements Endpoint {
     }
 
 
+    /**
+     * Handles exception when an entity is not found.
+     *
+     * @param t        NotFoundException thrown
+     * @param request  Request java object.
+     * @param response Response java object.
+     */
     private void handleNotFound(NotFoundException t, Request request, Response response) {
         response.status(404);
         response.body(new Gson().toJson(t.getMessage() + " not found."));
     }
 
-
+    /**
+     * Handles default exception when the API fall into a not handled exception.
+     * Or if there is a logic problem within an API.
+     *
+     * @param t        Exception thrown
+     * @param request  Request java object.
+     * @param response Response java object.
+     */
     private void handleDefaultException(Exception t, Request request, Response response) {
         response.status(500);
         response.body(new Gson().toJson(t));

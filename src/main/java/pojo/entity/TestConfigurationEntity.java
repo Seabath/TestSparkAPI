@@ -7,6 +7,9 @@ import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * Gathers all informations about you tests suite.
+ */
 @Getter
 @Entity
 @Table(name = "test_configuration")

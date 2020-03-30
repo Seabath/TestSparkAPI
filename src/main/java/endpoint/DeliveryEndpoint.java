@@ -11,13 +11,16 @@ import javassist.NotFoundException;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pojo.delivery.PostDeliveryRequest;
 import pojo.delivery.GetDeliveryResponse;
+import pojo.delivery.PostDeliveryRequest;
 import pojo.entity.DeliveryEntity;
 import service.SimpleService;
 import spark.Request;
 import spark.Response;
 
+/**
+ * Endpoint that handle every thing related to delivery entity.
+ */
 public class DeliveryEndpoint implements Endpoint {
 
     private static final Logger logger = LogManager.getLogger(DeliveryEndpoint.class);
@@ -45,6 +48,13 @@ public class DeliveryEndpoint implements Endpoint {
                 , this::createDelivery);
     }
 
+    /**
+     * Get a delivery by its ID.
+     *
+     * @param request  Request java object.
+     * @param response Response java object.
+     * @return Json formated GetDeliveryResponse object
+     */
     @SneakyThrows
     private String getDelivery(Request request, Response response) {
         final long id = Long.parseLong(request.params(PARAM_ID));
@@ -58,6 +68,13 @@ public class DeliveryEndpoint implements Endpoint {
         return new Gson().toJson(getDeliveryResponse);
     }
 
+    /**
+     * Create a delivery with request's body and stores it in database.
+     *
+     * @param request  Request of the request with a PostDeliveryRequest as json in its body.
+     * @param response Response of the request
+     * @return Json formated GetDeliveryResponse object
+     */
     private String createDelivery(Request request, Response response) {
         PostDeliveryRequest postDeliveryRequest = new Gson().fromJson(request.body(), PostDeliveryRequest.class);
 

@@ -7,6 +7,9 @@ import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * Coupled to the TestEntity, it's the entity that will record everything on a specific test run.
+ */
 @Getter
 @Entity
 @Table(name = "test_run")

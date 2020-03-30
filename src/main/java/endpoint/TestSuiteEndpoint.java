@@ -19,6 +19,9 @@ import service.SimpleService;
 import spark.Request;
 import spark.Response;
 
+/**
+ * Endpoin that handles TestSuite entity.
+ */
 public class TestSuiteEndpoint implements Endpoint {
 
     private static final Logger logger = LogManager.getLogger(TestConfigurationEndpoint.class);
@@ -50,6 +53,14 @@ public class TestSuiteEndpoint implements Endpoint {
     }
 
 
+    /**
+     * Create a test suite with given configuration ID and stores it in database.
+     *
+     * @param request  Request of the request with a PostTestConfigurationRequest as json in its
+     *                 body.
+     * @param response Response of the request
+     * @return Json formated GetTestSuiteResponse object
+     */
     @SneakyThrows
     private String startSuite(Request request, Response response) {
         final long id = Long.parseLong(request.params(PARAM_ID));

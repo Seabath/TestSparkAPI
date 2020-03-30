@@ -19,6 +19,9 @@ import service.SimpleService;
 import spark.Request;
 import spark.Response;
 
+/**
+ * Endpoint that handles configuration entity.
+ */
 public class TestConfigurationEndpoint implements Endpoint {
 
     private static final Logger logger = LogManager.getLogger(TestConfigurationEndpoint.class);
@@ -50,6 +53,13 @@ public class TestConfigurationEndpoint implements Endpoint {
 
     }
 
+    /**
+     * Get a configuration by its ID.
+     *
+     * @param request  Request java object.
+     * @param response Response java object.
+     * @return Json formated GetTestConfigurationResponse object
+     */
     @SneakyThrows
     private String getTestConfiguration(Request request, Response response) {
         final long id = Long.parseLong(request.params(PARAM_ID));
@@ -63,6 +73,14 @@ public class TestConfigurationEndpoint implements Endpoint {
         return new Gson().toJson(testConfigurationResponse);
     }
 
+    /**
+     * Create a test configuration with request's body and store it into database.
+     *
+     * @param request  Request of the request with a PostTestConfigurationRequest as json in its
+     *                 body.
+     * @param response Response of the request
+     * @return Json formated GetTestConfigurationResponse object
+     */
     @SneakyThrows
     private String createTestConfiguration(Request request, Response response) {
         final PostTestConfigurationRequest postTestConfigurationRequest = new Gson().fromJson(request.body(), PostTestConfigurationRequest.class);

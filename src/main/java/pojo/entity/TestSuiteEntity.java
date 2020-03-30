@@ -8,6 +8,9 @@ import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * This is the entity gathering all tests and containing data about your run as a whole.
+ */
 @Getter
 @Entity
 @Table(name = "test_suite")

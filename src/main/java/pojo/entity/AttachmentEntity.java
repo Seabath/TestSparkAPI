@@ -4,6 +4,9 @@ import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * Relates to attachments you can link to a specific test run.
+ */
 @Getter
 @Entity
 @Table(name = "attachment")

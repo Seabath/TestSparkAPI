@@ -7,6 +7,9 @@ import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * This is the application delivered by your developpement teams.
+ */
 @Getter
 @Entity
 @Table(name = "delivery")

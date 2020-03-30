@@ -4,6 +4,9 @@ import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * In case of a test failure, it's the entity that record and keeps informations about it.
+ */
 @Getter
 @Entity
 @Table(name = "failure")

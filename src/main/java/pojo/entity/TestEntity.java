@@ -6,6 +6,10 @@ import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * This is the information about your test run. In case of multiple run, it contains only generic
+ * information about it like it's name.
+ */
 @Getter
 @Entity
 @Table(name = "test_run")
