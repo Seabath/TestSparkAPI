@@ -3,7 +3,6 @@ package endpoint;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import java.lang.reflect.Field;
 import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,25 +12,20 @@ import static org.mockito.Matchers.eq;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import pojo.delivery.PostDeliveryRequest;
 import pojo.delivery.GetDeliveryResponse;
+import pojo.delivery.PostDeliveryRequest;
 import pojo.entity.DeliveryEntity;
 import service.SimpleService;
 
 class DeliveryEndpointTest extends AbstractEndPointTest {
 
-    private static DeliveryEndpoint endpoint;
-    private static SimpleService mockedService;
+    private static SimpleService<DeliveryEntity> mockedService;
 
     @BeforeAll
-    public static void initService() throws NoSuchFieldException, IllegalAccessException {
-        endpoint = new DeliveryEndpoint();
+    public static void initService() {
         mockedService = mock(SimpleService.class);
 
-        final Field deliveryServiceField = endpoint.getClass().getDeclaredField("deliveryService");
-        deliveryServiceField.setAccessible(true);
-        deliveryServiceField.set(endpoint, mockedService);
-        sparkSwagger.endpoint(endpoint);
+        sparkSwagger.endpoint(new DeliveryEndpoint(mockedService));
     }
 
     @BeforeEach

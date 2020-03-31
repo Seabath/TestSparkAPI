@@ -2,6 +2,7 @@ package app;
 
 import com.beerboy.ss.SparkSwagger;
 import com.beerboy.ss.rest.Endpoint;
+import dao.SimpleDAO;
 import endpoint.DeliveryEndpoint;
 import endpoint.ExceptionEndpoint;
 import endpoint.TestConfigurationEndpoint;
@@ -11,6 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pojo.entity.DeliveryEntity;
+import pojo.entity.TestConfigurationEntity;
+import pojo.entity.TestSuiteEntity;
+import service.SimpleService;
 import spark.Service;
 import static spark.Service.ignite;
 
@@ -28,11 +33,26 @@ public class Main {
         sparkService.port(Service.SPARK_DEFAULT_PORT);
 
 
+        // DAO declarations
+        final SimpleDAO<DeliveryEntity> deliveryDAO = new SimpleDAO<>(DeliveryEntity.class);
+        final SimpleDAO<TestConfigurationEntity> testConfigurationDAO =
+            new SimpleDAO<>(TestConfigurationEntity.class);
+        final SimpleDAO<TestSuiteEntity> testSuiteDAO = new SimpleDAO<>(TestSuiteEntity.class);
+
+        // Service declarations
+        final SimpleService<DeliveryEntity> deliveryService =
+            new SimpleService<>(deliveryDAO);
+        final SimpleService<TestConfigurationEntity> testConfigurationService =
+            new SimpleService<>(testConfigurationDAO);
+        final SimpleService<TestSuiteEntity> testSuiteService =
+            new SimpleService<>(testSuiteDAO);
+
+        // Route mapping
         final List<Endpoint> endpoints = Arrays.asList(
             new ExceptionEndpoint(),
-            new DeliveryEndpoint(),
-            new TestConfigurationEndpoint(),
-            new TestSuiteEndpoint()
+            new DeliveryEndpoint(deliveryService),
+            new TestConfigurationEndpoint(testConfigurationService, deliveryService),
+            new TestSuiteEndpoint(testSuiteService, testConfigurationService)
         );
 
 

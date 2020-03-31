@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import static endpoint.TestConfigurationEndpoint.TEST_CONFIGURATION_ENDPOINT_ROUTE;
-import factory.TestConfigurationFactory;
-import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,23 +20,16 @@ import service.SimpleService;
 
 class TestConfigurationEndpointTest extends AbstractEndPointTest {
 
-    private static TestConfigurationEndpoint endpoint;
-    private static SimpleService mockedDeliveryService;
-    private static SimpleService mockedTestConfigurationService;
+    private static SimpleService<DeliveryEntity> mockedDeliveryService;
+    private static SimpleService<TestConfigurationEntity> mockedTestConfigurationService;
 
     @BeforeAll
-    public static void initService() throws NoSuchFieldException, IllegalAccessException {
-        endpoint = new TestConfigurationEndpoint();
+    public static void initService() {
         mockedDeliveryService = mock(SimpleService.class);
         mockedTestConfigurationService = mock(SimpleService.class);
+        TestConfigurationEndpoint endpoint =
+            new TestConfigurationEndpoint(mockedTestConfigurationService, mockedDeliveryService);
 
-        final Field deliveryServiceField = endpoint.getClass().getDeclaredField("deliveryService");
-        deliveryServiceField.setAccessible(true);
-        deliveryServiceField.set(endpoint, mockedDeliveryService);
-
-        final Field testConfigurationServiceField = endpoint.getClass().getDeclaredField("testConfigurationService");
-        testConfigurationServiceField.setAccessible(true);
-        testConfigurationServiceField.set(endpoint, mockedTestConfigurationService);
         sparkSwagger.endpoint(endpoint);
     }
 

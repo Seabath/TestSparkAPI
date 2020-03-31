@@ -6,12 +6,12 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import common.Status;
 import static endpoint.TestSuiteEndpoint.START_ROUTE;
 import static endpoint.TestSuiteEndpoint.TEST_SUITE_ENDPOINT_ROUTE;
-import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.*;
 import pojo.entity.TestConfigurationEntity;
+import pojo.entity.TestSuiteEntity;
 import pojo.test.configuration.GetTestConfigurationResponse;
 import pojo.test.suite.GetTestSuiteResponse;
 import service.SimpleService;
@@ -19,22 +19,15 @@ import service.SimpleService;
 class TestSuiteEndpointTest extends AbstractEndPointTest {
 
     private static TestSuiteEndpoint endpoint;
-    private static SimpleService mockedTestSuiteService;
-    private static SimpleService mockedTestConfigurationService;
+    private static SimpleService<TestSuiteEntity> mockedTestSuiteService;
+    private static SimpleService<TestConfigurationEntity> mockedTestConfigurationService;
 
     @BeforeAll
-    public static void initService() throws NoSuchFieldException, IllegalAccessException {
-        endpoint = new TestSuiteEndpoint();
+    public static void initService() {
         mockedTestSuiteService = mock(SimpleService.class);
         mockedTestConfigurationService = mock(SimpleService.class);
+        endpoint = new TestSuiteEndpoint(mockedTestSuiteService, mockedTestConfigurationService);
 
-        final Field deliveryServiceField = endpoint.getClass().getDeclaredField("testSuiteService");
-        deliveryServiceField.setAccessible(true);
-        deliveryServiceField.set(endpoint, mockedTestSuiteService);
-
-        final Field testConfigurationServiceField = endpoint.getClass().getDeclaredField("testConfigurationService");
-        testConfigurationServiceField.setAccessible(true);
-        testConfigurationServiceField.set(endpoint, mockedTestConfigurationService);
         sparkSwagger.endpoint(endpoint);
     }
 

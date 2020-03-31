@@ -5,7 +5,6 @@ import static com.beerboy.ss.descriptor.EndpointDescriptor.endpointPath;
 import com.beerboy.ss.descriptor.MethodDescriptor;
 import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
-import dao.SimpleDAO;
 import factory.TestConfigurationFactory;
 import javassist.NotFoundException;
 import lombok.SneakyThrows;
@@ -33,9 +32,10 @@ public class TestConfigurationEndpoint implements Endpoint {
     private final SimpleService<TestConfigurationEntity> testConfigurationService;
     private final SimpleService<DeliveryEntity> deliveryService;
 
-    public TestConfigurationEndpoint() {
-        testConfigurationService = new SimpleService<>(new SimpleDAO<>(TestConfigurationEntity.class));
-        deliveryService = new SimpleService<>(new SimpleDAO<>(DeliveryEntity.class));
+    public TestConfigurationEndpoint(SimpleService<TestConfigurationEntity> testConfigurationService,
+                                     SimpleService<DeliveryEntity> deliveryService) {
+        this.testConfigurationService = testConfigurationService;
+        this.deliveryService = deliveryService;
     }
 
     @Override

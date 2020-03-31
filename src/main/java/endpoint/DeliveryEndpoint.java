@@ -5,7 +5,6 @@ import static com.beerboy.ss.descriptor.EndpointDescriptor.endpointPath;
 import com.beerboy.ss.descriptor.MethodDescriptor;
 import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
-import dao.SimpleDAO;
 import factory.DeliveryFactory;
 import javassist.NotFoundException;
 import lombok.SneakyThrows;
@@ -30,8 +29,8 @@ public class DeliveryEndpoint implements Endpoint {
 
     private final SimpleService<DeliveryEntity> deliveryService;
 
-    public DeliveryEndpoint() {
-        deliveryService = new SimpleService<>(new SimpleDAO<>(DeliveryEntity.class));
+    public DeliveryEndpoint(SimpleService<DeliveryEntity> deliveryService) {
+        this.deliveryService = deliveryService;
     }
 
     @Override
