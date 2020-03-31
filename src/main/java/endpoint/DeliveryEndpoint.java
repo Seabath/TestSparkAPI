@@ -6,10 +6,9 @@ import com.beerboy.ss.descriptor.MethodDescriptor;
 import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
 import factory.DeliveryFactory;
+import filter.DoNothingFilter;
 import javassist.NotFoundException;
 import lombok.SneakyThrows;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import pojo.delivery.GetDeliveryResponse;
 import pojo.delivery.PostDeliveryRequest;
 import pojo.entity.DeliveryEntity;
@@ -22,8 +21,6 @@ import spark.Response;
  */
 public class DeliveryEndpoint implements Endpoint {
 
-    private static final Logger logger = LogManager.getLogger(DeliveryEndpoint.class);
-
     public static final String DELIVERY_ENDPOINT_ROUTE = "/delivery";
     private static final String PARAM_ID = ":id";
 
@@ -35,7 +32,7 @@ public class DeliveryEndpoint implements Endpoint {
 
     @Override
     public void bind(SparkSwagger sparkSwagger) {
-        sparkSwagger.endpoint(endpointPath(DELIVERY_ENDPOINT_ROUTE), (q, a) -> logger.info("Received request for delivery:\nPath: {}\nBody: {}", q.pathInfo(), q.body()))
+        sparkSwagger.endpoint(endpointPath(DELIVERY_ENDPOINT_ROUTE), new DoNothingFilter())
 
             .get(MethodDescriptor.path("/" + PARAM_ID)
                 .withResponseType(GetDeliveryResponse.class), this::getDelivery)

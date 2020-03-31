@@ -7,10 +7,9 @@ import com.beerboy.ss.descriptor.ParameterDescriptor;
 import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
 import factory.TestSuiteFactory;
+import filter.DoNothingFilter;
 import javassist.NotFoundException;
 import lombok.SneakyThrows;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import pojo.entity.TestConfigurationEntity;
 import pojo.entity.TestSuiteEntity;
 import pojo.test.suite.GetTestSuiteResponse;
@@ -22,8 +21,6 @@ import spark.Response;
  * Endpoin that handles TestSuite entity.
  */
 public class TestSuiteEndpoint implements Endpoint {
-
-    private static final Logger logger = LogManager.getLogger(TestConfigurationEndpoint.class);
 
     public static final String TEST_SUITE_ENDPOINT_ROUTE = "/suite";
     public static final String START_ROUTE = "/start";
@@ -40,7 +37,7 @@ public class TestSuiteEndpoint implements Endpoint {
     @Override
     public void bind(SparkSwagger sparkSwagger) {
 
-        sparkSwagger.endpoint(endpointPath(TEST_SUITE_ENDPOINT_ROUTE), (q, a) -> logger.info("Received request for test configuration:\nPath: {}\nBody: {}", q.pathInfo(), q.body()))
+        sparkSwagger.endpoint(endpointPath(TEST_SUITE_ENDPOINT_ROUTE), new DoNothingFilter())
 
             .post(MethodDescriptor.path(START_ROUTE + "/" + PARAM_ID)
                     .withParam(ParameterDescriptor.newBuilder()

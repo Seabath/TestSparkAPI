@@ -6,10 +6,9 @@ import com.beerboy.ss.descriptor.MethodDescriptor;
 import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
 import factory.TestConfigurationFactory;
+import filter.DoNothingFilter;
 import javassist.NotFoundException;
 import lombok.SneakyThrows;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import pojo.entity.DeliveryEntity;
 import pojo.entity.TestConfigurationEntity;
 import pojo.test.configuration.GetTestConfigurationResponse;
@@ -22,9 +21,6 @@ import spark.Response;
  * Endpoint that handles configuration entity.
  */
 public class TestConfigurationEndpoint implements Endpoint {
-
-    private static final Logger logger = LogManager.getLogger(TestConfigurationEndpoint.class);
-
 
     public static final String TEST_CONFIGURATION_ENDPOINT_ROUTE = "/configuration";
     private static final String PARAM_ID = ":id";
@@ -40,7 +36,7 @@ public class TestConfigurationEndpoint implements Endpoint {
 
     @Override
     public void bind(SparkSwagger sparkSwagger) {
-        sparkSwagger.endpoint(endpointPath(TEST_CONFIGURATION_ENDPOINT_ROUTE), (q, a) -> logger.info("Received request for test configuration:\nPath: {}\nBody: {}", q.pathInfo(), q.body()))
+        sparkSwagger.endpoint(endpointPath(TEST_CONFIGURATION_ENDPOINT_ROUTE), new DoNothingFilter())
 
             .get(MethodDescriptor.path("/" + PARAM_ID)
                 .withResponseType(GetTestConfigurationResponse.class), this::getTestConfiguration)

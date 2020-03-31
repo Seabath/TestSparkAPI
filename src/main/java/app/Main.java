@@ -3,10 +3,7 @@ package app;
 import com.beerboy.ss.SparkSwagger;
 import com.beerboy.ss.rest.Endpoint;
 import dao.SimpleDAO;
-import endpoint.DeliveryEndpoint;
-import endpoint.ExceptionEndpoint;
-import endpoint.TestConfigurationEndpoint;
-import endpoint.TestSuiteEndpoint;
+import endpoint.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +46,7 @@ public class Main {
 
         // Route mapping
         final List<Endpoint> endpoints = Arrays.asList(
+            new LoggerEndpoint(logger),
             new ExceptionEndpoint(),
             new DeliveryEndpoint(deliveryService),
             new TestConfigurationEndpoint(testConfigurationService, deliveryService),
