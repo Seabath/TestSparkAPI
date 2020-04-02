@@ -26,16 +26,15 @@ class SimpleServiceTest {
 
     private SimpleDAO<String> mockedDAO;
     private Session mockedSession;
-    private SessionFactory mockedSessionFactory;
     private Transaction mockedTransaction;
 
     @BeforeEach
     public void setUp() throws IllegalAccessException, NoSuchFieldException {
         mockedDAO = mock(SimpleDAO.class);
         mockedSession = mock(Session.class);
-        mockedSessionFactory = mock(SessionFactory.class);
         mockedTransaction = mock(Transaction.class);
 
+        SessionFactory mockedSessionFactory = mock(SessionFactory.class);
         final Field sessionFactoryField = SimpleDAO.class.getDeclaredField("sessionFactory");
         sessionFactoryField.setAccessible(true);
         sessionFactoryField.set(null, mockedSessionFactory);

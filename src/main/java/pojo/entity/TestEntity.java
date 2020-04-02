@@ -1,10 +1,12 @@
 package pojo.entity;
 
 import common.Status;
+import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This is the information about your test run. In case of multiple run, it contains only generic
@@ -13,7 +15,7 @@ import lombok.Getter;
 @Getter
 @Entity
 @Table(name = "test_run")
-public class TestEntity {
+public class TestEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +28,7 @@ public class TestEntity {
     @Column(name = "class_name")
     private String className;
 
+    @Setter
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;

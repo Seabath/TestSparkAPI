@@ -1,11 +1,13 @@
 package pojo.entity;
 
 import common.Status;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Coupled to the TestEntity, it's the entity that will record everything on a specific test run.
@@ -13,7 +15,7 @@ import lombok.Getter;
 @Getter
 @Entity
 @Table(name = "test_run")
-public class TestRunEntity {
+public class TestRunEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +26,12 @@ public class TestRunEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
+    @Setter
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
+    @Setter
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;

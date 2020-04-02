@@ -9,10 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pojo.entity.DeliveryEntity;
-import pojo.entity.TestConfigurationEntity;
-import pojo.entity.TestSuiteEntity;
+import pojo.entity.*;
 import service.SimpleService;
+import service.TestRunService;
+import service.TestService;
+import service.TestSuiteService;
 import spark.Service;
 import static spark.Service.ignite;
 
@@ -35,14 +36,17 @@ public class Main {
         final SimpleDAO<TestConfigurationEntity> testConfigurationDAO =
             new SimpleDAO<>(TestConfigurationEntity.class);
         final SimpleDAO<TestSuiteEntity> testSuiteDAO = new SimpleDAO<>(TestSuiteEntity.class);
+        final SimpleDAO<TestEntity> testEntityDAO = new SimpleDAO<>(TestEntity.class);
+        final SimpleDAO<TestRunEntity> testRunEntityDAO = new SimpleDAO<>(TestRunEntity.class);
 
         // Service declarations
         final SimpleService<DeliveryEntity> deliveryService =
             new SimpleService<>(deliveryDAO);
         final SimpleService<TestConfigurationEntity> testConfigurationService =
             new SimpleService<>(testConfigurationDAO);
-        final SimpleService<TestSuiteEntity> testSuiteService =
-            new SimpleService<>(testSuiteDAO);
+        final TestRunService testRunService = new TestRunService(testRunEntityDAO);
+        final TestService testService = new TestService(testEntityDAO, testRunService);
+        final TestSuiteService testSuiteService = new TestSuiteService(testSuiteDAO, testService);
 
         // Route mapping
         final List<Endpoint> endpoints = Arrays.asList(

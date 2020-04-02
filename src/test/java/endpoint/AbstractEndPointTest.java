@@ -49,6 +49,13 @@ public abstract class AbstractEndPointTest {
             .asString();
     }
 
+    protected HttpResponse<String> testPut(String endpointPath, Object requestObject) throws UnirestException {
+        String body = new Gson().toJson(requestObject);
+        return Unirest.put("http://localhost:" + TEST_DEFAULT_PORT + endpointPath)
+            .body(body)
+            .asString();
+    }
+
     protected HttpResponse<String> testGet(String endpointPath) throws UnirestException {
         return Unirest.get("http://localhost:" + TEST_DEFAULT_PORT + endpointPath)
             .asString();

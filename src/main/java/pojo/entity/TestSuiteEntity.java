@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This is the entity gathering all tests and containing data about your run as a whole.
@@ -24,10 +25,12 @@ public class TestSuiteEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
+    @Setter
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
+    @Setter
     @Column(name = "status")
     private Status status;
 
