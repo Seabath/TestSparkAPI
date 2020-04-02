@@ -25,8 +25,8 @@ public class TestEntity implements Serializable {
     @Column(name = "test_name")
     private String testName;
 
-    @Column(name = "class_name")
-    private String className;
+    @Column(name = "package_name")
+    private String packageName;
 
     @Setter
     @Column(name = "status")
@@ -44,11 +44,11 @@ public class TestEntity implements Serializable {
     }
 
     @Builder
-    public TestEntity(Long id, String testName, String className, Status status,
+    public TestEntity(Long id, String testName, String packageName, Status status,
                       TestSuiteEntity testSuiteEntity, Set<TestRunEntity> testRunEntities) {
         this.id = id;
         this.testName = testName;
-        this.className = className;
+        this.packageName = packageName;
         this.status = status;
         this.testSuiteEntity = testSuiteEntity;
         this.testRunEntities = testRunEntities;
