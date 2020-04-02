@@ -1,6 +1,8 @@
 # TestSparkAPI
 This project is an API that record tests launched by any system.
 
+Here is a trello link to follow what's to come: [Trello](https://trello.com/b/bJoQWAA3/testsparkapi)
+
 
 Technologies
 -
