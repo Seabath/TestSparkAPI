@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @Entity
-@Table(name = "attachment")
+@Table(name = "driver")
 public class DriverEntity {
 
     @Id
