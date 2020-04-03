@@ -55,4 +55,14 @@ public class TestSuiteEntity implements Serializable {
         this.testConfigurationEntity = testConfigurationEntity;
         this.testEntities = testEntities;
     }
+
+    /**
+     * Adds a test entity to this' collection.
+     *
+     * @param testEntity entity to add
+     */
+    public void addTest(TestEntity testEntity) {
+        testEntities.add(testEntity);
+        testEntity.setTestSuiteEntity(this);
+    }
 }

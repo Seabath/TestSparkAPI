@@ -14,7 +14,7 @@ import lombok.Setter;
  */
 @Getter
 @Entity
-@Table(name = "test_run")
+@Table(name = "test")
 public class TestEntity implements Serializable {
 
     @Id
@@ -33,6 +33,7 @@ public class TestEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "fk_test_suite_entity_id", nullable = false)
     private TestSuiteEntity testSuiteEntity;
@@ -52,5 +53,15 @@ public class TestEntity implements Serializable {
         this.status = status;
         this.testSuiteEntity = testSuiteEntity;
         this.testRunEntities = testRunEntities;
+    }
+
+    /**
+     * Adds a test run entity to this' collections.
+     *
+     * @param testRunEntity entity to add
+     */
+    public void addRun(TestRunEntity testRunEntity) {
+        testRunEntities.add(testRunEntity);
+        testRunEntity.setTestEntity(this);
     }
 }

@@ -36,6 +36,7 @@ public class TestRunEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "fk_test_entity_id", nullable = false)
     private TestEntity testEntity;

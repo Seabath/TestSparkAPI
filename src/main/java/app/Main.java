@@ -3,13 +3,17 @@ package app;
 import com.beerboy.ss.SparkSwagger;
 import com.beerboy.ss.rest.Endpoint;
 import dao.SimpleDAO;
+import dao.TestDAO;
 import endpoint.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pojo.entity.*;
+import pojo.entity.DeliveryEntity;
+import pojo.entity.TestConfigurationEntity;
+import pojo.entity.TestRunEntity;
+import pojo.entity.TestSuiteEntity;
 import service.SimpleService;
 import service.TestRunService;
 import service.TestService;
@@ -36,7 +40,7 @@ public class Main {
         final SimpleDAO<TestConfigurationEntity> testConfigurationDAO =
             new SimpleDAO<>(TestConfigurationEntity.class);
         final SimpleDAO<TestSuiteEntity> testSuiteDAO = new SimpleDAO<>(TestSuiteEntity.class);
-        final SimpleDAO<TestEntity> testEntityDAO = new SimpleDAO<>(TestEntity.class);
+        final TestDAO testEntityDAO = new TestDAO();
         final SimpleDAO<TestRunEntity> testRunEntityDAO = new SimpleDAO<>(TestRunEntity.class);
 
         // Service declarations

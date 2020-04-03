@@ -1,18 +1,24 @@
 package service;
 
 import common.Status;
-import dao.SimpleDAO;
+import dao.TestDAO;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
+import lombok.NonNull;
 import org.hibernate.Hibernate;
 import pojo.entity.TestEntity;
 import pojo.entity.TestRunEntity;
+import pojo.entity.TestSuiteEntity;
 
 public class TestService extends SimpleService<TestEntity> {
 
     private final TestRunService testRunService;
+    private final TestDAO testDAO;
 
-    public TestService(SimpleDAO<TestEntity> simpleDAO, TestRunService testRunService) {
-        super(simpleDAO);
+    public TestService(TestDAO testDAO, TestRunService testRunService) {
+        super(testDAO);
+        this.testDAO = testDAO;
         this.testRunService = testRunService;
     }
 
@@ -29,5 +35,44 @@ public class TestService extends SimpleService<TestEntity> {
             .forEach(testRunService::interrupt);
         testEntity.setStatus(Status.INTERRUPTED);
         this.createOrUpdate(testEntity);
+    }
+
+    /**
+     * Start a test entity by creating it, or getting it from database, and attaches it a new test
+     * run entity.
+     *
+     * @param testSuiteEntity Test suite to attach it to.
+     * @param testName        Name of the launched test.
+     * @param packageName     Package of the launched test.
+     * @return TestEntity created or retrieved from the database.
+     */
+    public TestEntity startTest(@NonNull TestSuiteEntity testSuiteEntity, String testName, String packageName) {
+        TestEntity testEntity = this.get(testSuiteEntity.getId(), testName,
+            packageName);
+
+        if (testEntity == null) {
+            testEntity = TestEntity.builder()
+                .packageName(packageName)
+                .testName(testName)
+                .testSuiteEntity(testSuiteEntity)
+                .testRunEntities(new HashSet<>())
+                .build();
+            testSuiteEntity.addTest(testEntity);
+        }
+
+        testEntity.setStatus(Status.IN_PROGRESS);
+        final TestRunEntity runEntity = TestRunEntity.builder()
+            .status(Status.IN_PROGRESS)
+            .startDate(new Date())
+            .testEntity(testEntity)
+            .build();
+        testEntity.addRun(runEntity);
+
+        this.createOrUpdate(testEntity);
+        return testEntity;
+    }
+
+    private TestEntity get(Long id, String testName, String packageName) {
+        return executeQuery(session -> testDAO.find(session, id, testName, packageName));
     }
 }

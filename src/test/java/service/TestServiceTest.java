@@ -2,15 +2,20 @@ package service;
 
 import common.Status;
 import dao.SimpleDAO;
+import dao.TestDAO;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,18 +23,19 @@ import static org.mockito.Mockito.*;
 import org.mockito.verification.VerificationMode;
 import pojo.entity.TestEntity;
 import pojo.entity.TestRunEntity;
+import pojo.entity.TestSuiteEntity;
 
 class TestServiceTest {
 
 
     private TestService service;
-    private SimpleDAO<TestEntity> mockedDAO;
+    private TestDAO mockedDAO;
     private TestRunService mockedTestRunService;
     private Session mockedSession;
 
     @BeforeEach
     public void initService() throws NoSuchFieldException, IllegalAccessException {
-        mockedDAO = mock(SimpleDAO.class);
+        mockedDAO = mock(TestDAO.class);
         mockedTestRunService = mock(TestRunService.class);
         mockedSession = mock(Session.class);
         service = new TestService(mockedDAO, mockedTestRunService);
@@ -79,6 +85,99 @@ class TestServiceTest {
             Arguments.of(emptyRuns, never()), // technicaly shouldn't happen, but just in case
             Arguments.of(oneInProgress, only())
         );
+    }
+
+    @Test
+    public void shouldStartTestNotFound() {
+        final String testName = "testname";
+        final String packageName = "packagename";
+        final TestSuiteEntity testSuiteEntity = TestSuiteEntity.builder()
+            .id(42L)
+            .testEntities(new HashSet<>())
+            .build();
+
+        final TestEntity testEntity = service.startTest(testSuiteEntity, testName, packageName);
+
+
+        assertThat(testSuiteEntity.getTestEntities())
+            .contains(testEntity);
+
+        assertThat(testEntity.getStatus())
+            .isEqualTo(Status.IN_PROGRESS);
+        assertThat(testEntity.getTestName())
+            .isEqualTo(testName);
+        assertThat(testEntity.getPackageName())
+            .isEqualTo(packageName);
+        assertThat(testEntity.getTestSuiteEntity())
+            .isEqualTo(testSuiteEntity);
+
+        final Set<TestRunEntity> testRunEntities = testEntity.getTestRunEntities();
+        final List<TestRunEntity> collect = testRunEntities.parallelStream()
+            .collect(Collectors.toList());
+        assertThat(collect)
+            .hasSize(1);
+
+        final TestRunEntity testRunEntity = collect.get(0);
+        assertThat(testRunEntity.getStatus())
+            .isEqualTo(Status.IN_PROGRESS);
+        assertThat(testRunEntity.getStartDate())
+            .isNotNull();
+
+    }
+
+    @Test
+    public void shouldStartTestFound() {
+        final String testName = "testname";
+        final String packageName = "packagename";
+        final long isSuite = 42L;
+        final TestEntity expected = TestEntity.builder()
+            .packageName(packageName)
+            .testName(testName)
+            .status(Status.FAIL)
+            .testRunEntities(new HashSet<>())
+            .build();
+        final TestSuiteEntity testSuiteEntity = TestSuiteEntity.builder()
+            .id(isSuite)
+            .testEntities(Collections.singleton(expected))
+            .build();
+        expected.setTestSuiteEntity(testSuiteEntity);
+
+        when(mockedDAO.find(eq(mockedSession), eq(isSuite), eq(testName), eq(packageName)))
+            .thenReturn(expected);
+        final TestEntity result = service.startTest(testSuiteEntity, testName, packageName);
+
+
+        assertThat(testSuiteEntity.getTestEntities())
+            .contains(result);
+
+        assertThat(result)
+            .isEqualTo(expected);
+        assertThat(result.getStatus())
+            .isEqualTo(Status.IN_PROGRESS);
+        assertThat(result.getTestName())
+            .isEqualTo(testName);
+        assertThat(result.getPackageName())
+            .isEqualTo(packageName);
+        assertThat(result.getTestSuiteEntity())
+            .isEqualTo(testSuiteEntity);
+
+        final Set<TestRunEntity> testRunEntities = result.getTestRunEntities();
+        final List<TestRunEntity> collect = testRunEntities.parallelStream()
+            .collect(Collectors.toList());
+        assertThat(collect)
+            .hasSize(1);
+
+        final TestRunEntity testRunEntity = collect.get(0);
+        assertThat(testRunEntity.getStatus())
+            .isEqualTo(Status.IN_PROGRESS);
+        assertThat(testRunEntity.getStartDate())
+            .isNotNull();
+    }
+
+    @Test
+    public void shouldGetAnException() {
+        Assertions.assertThrows(NullPointerException.class, () ->
+            service.startTest(null, "", ""));
     }
 
 }
