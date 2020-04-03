@@ -24,7 +24,7 @@ public class FailureEntity {
     private String message;
 
     @Column(name = "java_exception")
-    private String javaException;
+    private String exception;
 
     @ManyToOne
     @JoinColumn(name = "fk_test_run_entity_id", nullable = false)
@@ -34,12 +34,12 @@ public class FailureEntity {
     }
 
     @Builder
-    public FailureEntity(Long id, String stacktrace, String message, String javaException,
+    public FailureEntity(Long id, String stacktrace, String message, String exception,
                          TestRunEntity testRunEntity) {
         this.id = id;
         this.stacktrace = stacktrace;
         this.message = message;
-        this.javaException = javaException;
+        this.exception = exception;
         this.testRunEntity = testRunEntity;
     }
 }
