@@ -34,7 +34,6 @@ class TestSuiteEndpointTest {
         endpoint = new TestSuiteEndpoint(mockedTestSuiteService, mockedTestConfigurationService);
         mockedRequest = mock(Request.class);
         mockedResponse = mock(Response.class);
-
     }
 
     @Test

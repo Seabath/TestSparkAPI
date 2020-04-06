@@ -30,7 +30,7 @@ public class ExceptionEndpoint implements Endpoint {
      * @param request  Request java object.
      * @param response Response java object.
      */
-    private void handleNotFound(NotFoundException t, Request request, Response response) {
+    public void handleNotFound(NotFoundException t, Request request, Response response) {
         response.status(404);
         response.body(new Gson().toJson(t.getMessage() + " not found."));
     }
@@ -43,7 +43,7 @@ public class ExceptionEndpoint implements Endpoint {
      * @param request  Request java object.
      * @param response Response java object.
      */
-    private void handleDefaultException(Exception t, Request request, Response response) {
+    public void handleDefaultException(Exception t, Request request, Response response) {
         response.status(500);
         response.body(new Gson().toJson(t));
     }
