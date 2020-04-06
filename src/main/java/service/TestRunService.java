@@ -11,13 +11,14 @@ public class TestRunService extends SimpleService<TestRunEntity> {
     }
 
     /**
-     * Sets status to interrupted and endate to actual date.
+     * Finish with given status and endate to actual date.
      *
      * @param testRunEntity entity to interrupt
+     * @param status        Status to set
      */
-    public void interrupt(TestRunEntity testRunEntity) {
+    public void finish(TestRunEntity testRunEntity, Status status) {
         testRunEntity.setEndDate(new Date());
-        testRunEntity.setStatus(Status.INTERRUPTED);
+        testRunEntity.setStatus(status);
         this.createOrUpdate(testRunEntity);
     }
 }

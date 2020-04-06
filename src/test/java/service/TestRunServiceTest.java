@@ -34,13 +34,14 @@ class TestRunServiceTest {
     }
 
     @Test
-    public void shouldTestInterrupt() {
+    public void shouldTestFinish() {
         final TestRunEntity testRunEntity = TestRunEntity.builder().build();
+        final Status expectedStatus = Status.INTERRUPTED;
 
-        service.interrupt(testRunEntity);
+        service.finish(testRunEntity, expectedStatus);
 
         assertThat(testRunEntity.getStatus())
-            .isEqualTo(Status.INTERRUPTED);
+            .isEqualTo(expectedStatus);
         assertThat(testRunEntity.getEndDate())
             .isNotNull();
         verify(service, times(1)).createOrUpdate(eq(testRunEntity));
