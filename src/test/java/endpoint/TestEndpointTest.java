@@ -3,15 +3,14 @@ package endpoint;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import static endpoint.TestEndpoint.START_ROUTE;
-import static endpoint.TestEndpoint.TEST_ENDPOINT_ROUTE;
+import static endpoint.TestEndpoint.*;
 import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import pojo.entity.TestEntity;
 import pojo.entity.TestRunEntity;
 import pojo.entity.TestSuiteEntity;
@@ -34,6 +33,11 @@ class TestEndpointTest extends AbstractEndPointTest {
             new TestEndpoint(mockedTestSuiteService, mockedTestService);
 
         sparkSwagger.endpoint(endpoint);
+    }
+
+    @BeforeEach
+    public void resetMocks() {
+        reset(mockedTestService, mockedTestSuiteService);
     }
 
 
@@ -82,6 +86,45 @@ class TestEndpointTest extends AbstractEndPointTest {
         final String responseBody = response.getBody();
         final GetTestResponse getTestResponse = new Gson().fromJson(responseBody, GetTestResponse.class);
         assertThat(getTestResponse)
+            .usingRecursiveComparison()
+            .isEqualTo(expected);
+    }
+
+    @Test
+    public void shouldNotFindTest() throws UnirestException {
+        final HttpResponse<String> response = testPut(TEST_ENDPOINT_ROUTE + SUCCESS_ROUTE + "/42", "");
+
+        assertThat(response.getStatus())
+            .isEqualTo(404);
+    }
+
+    @Test
+    public void shouldSucceedTest() throws UnirestException {
+        final Long id = 42L;
+        final long testSuiteId = 24L;
+        final TestSuiteEntity testSuiteEntity = TestSuiteEntity.builder()
+            .id(testSuiteId)
+            .build();
+        final TestEntity testEntity = TestEntity.builder()
+            .id(id)
+            .testRunEntities(Collections.emptySet())
+            .testSuiteEntity(testSuiteEntity)
+            .build();
+        final GetTestResponse expected = GetTestResponse.builder()
+            .id(id)
+            .testSuiteId(testSuiteId)
+            .testRuns(Collections.emptySet())
+            .build();
+
+        when(mockedTestService.get(eq(id))).thenReturn(testEntity);
+
+        final HttpResponse<String> response = testPut(TEST_ENDPOINT_ROUTE + SUCCESS_ROUTE + "/" + id, "");
+
+        verify(mockedTestService, times(1)).succeed(eq(testEntity));
+        assertThat(response.getStatus())
+            .isEqualTo(200);
+        final GetTestResponse body = new Gson().fromJson(response.getBody(), GetTestResponse.class);
+        assertThat(body)
             .usingRecursiveComparison()
             .isEqualTo(expected);
     }
