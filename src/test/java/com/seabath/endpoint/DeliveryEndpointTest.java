@@ -1,40 +1,41 @@
 package com.seabath.endpoint;
 
 import com.google.gson.Gson;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import java.util.Date;
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.mockito.Matchers.eq;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static com.seabath.endpoint.DeliveryEndpoint.PARAM_ID;
 import com.seabath.pojo.delivery.GetDeliveryResponse;
 import com.seabath.pojo.delivery.PostDeliveryRequest;
 import com.seabath.pojo.entity.DeliveryEntity;
 import com.seabath.service.SimpleService;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import javassist.NotFoundException;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+import spark.Request;
+import spark.Response;
 
-class DeliveryEndpointTest extends AbstractEndPointTest {
+class DeliveryEndpointTest {
 
-    private static SimpleService<DeliveryEntity> mockedService;
+    private SimpleService<DeliveryEntity> mockedService;
+    private DeliveryEndpoint deliveryEndpoint;
+    private Request mockedRequest;
+    private Response mockedResponse;
 
-    @BeforeAll
-    public static void initService() {
-        mockedService = mock(SimpleService.class);
-
-        sparkSwagger.endpoint(new DeliveryEndpoint(mockedService));
-    }
 
     @BeforeEach
     public void resetMock() {
-        Mockito.reset(mockedService);
+        mockedService = mock(SimpleService.class);
+        mockedResponse = mock(Response.class);
+        mockedRequest = mock(Request.class);
+        deliveryEndpoint = new DeliveryEndpoint(mockedService);
     }
 
     @Test
-    public void shouldCreateNewDelivery() throws UnirestException {
+    public void shouldCreateNewDelivery() {
 
         String path = "path";
         String version = "version";
@@ -51,20 +52,21 @@ class DeliveryEndpointTest extends AbstractEndPointTest {
             .build();
 
 
-        HttpResponse<String> response = testPost(DeliveryEndpoint.DELIVERY_ENDPOINT_ROUTE, request);
+        when(mockedRequest.body()).thenReturn(new Gson().toJson(request));
+
+        final String delivery = deliveryEndpoint.createDelivery(mockedRequest, mockedResponse);
 
 
-        assertThat(response.getStatus())
-            .isEqualTo(201);
-        assertThat(new Gson().fromJson(response.getBody(), GetDeliveryResponse.class))
+        verify(mockedResponse, times(1)).status(eq(201));
+        assertThat(new Gson().fromJson(delivery, GetDeliveryResponse.class))
             .isEqualToIgnoringNullFields(expectedBody);
     }
 
 
     @Test
-    public void shouldGetDelivery() throws UnirestException {
+    public void shouldGetDelivery() {
         final long id = 42L;
-        final Date date = new Date();
+        final Date date = Date.from(new Date().toInstant().truncatedTo(ChronoUnit.SECONDS));
         DeliveryEntity entity = DeliveryEntity.builder()
             .date(date)
             .id(id)
@@ -81,28 +83,27 @@ class DeliveryEndpointTest extends AbstractEndPointTest {
             .build();
 
         when(mockedService.get(eq(id))).thenReturn(entity);
+        when(mockedRequest.params(PARAM_ID)).thenReturn("" + id);
 
-        HttpResponse<String> response = testGet(DeliveryEndpoint.DELIVERY_ENDPOINT_ROUTE + "/" + id);
+        final String delivery = deliveryEndpoint.getDelivery(mockedRequest, mockedResponse);
 
-
-        assertThat(response.getStatus())
-            .isEqualTo(200);
-        assertThat(response.getBody())
-            .isEqualTo(new Gson().toJson(expectedBody));
+        assertThat(new Gson().fromJson(delivery, GetDeliveryResponse.class))
+            .isEqualToIgnoringNullFields(expectedBody);
+        verify(mockedService, times(1)).get(id);
     }
 
 
     @Test
-    public void shouldNotGetDelivery() throws UnirestException {
+    public void shouldNotGetDelivery() {
         final long id = 42L;
 
         when(mockedService.get(eq(id))).thenReturn(null);
+        when(mockedRequest.params(PARAM_ID)).thenReturn("" + id);
 
-        HttpResponse<String> response = testGet(DeliveryEndpoint.DELIVERY_ENDPOINT_ROUTE + "/" + id);
+        Assertions.assertThrows(NotFoundException.class,
+            () -> deliveryEndpoint.getDelivery(mockedRequest, mockedResponse));
 
-
-        assertThat(response.getStatus())
-            .isEqualTo(404);
+        verify(mockedService, times(1)).get(id);
     }
 
 }

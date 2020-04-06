@@ -7,12 +7,12 @@ import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
 import com.seabath.factory.DeliveryFactory;
 import com.seabath.filter.DoNothingFilter;
-import javassist.NotFoundException;
-import lombok.SneakyThrows;
 import com.seabath.pojo.delivery.GetDeliveryResponse;
 import com.seabath.pojo.delivery.PostDeliveryRequest;
 import com.seabath.pojo.entity.DeliveryEntity;
 import com.seabath.service.SimpleService;
+import javassist.NotFoundException;
+import lombok.SneakyThrows;
 import spark.Request;
 import spark.Response;
 
@@ -21,8 +21,8 @@ import spark.Response;
  */
 public class DeliveryEndpoint implements Endpoint {
 
-    public static final String DELIVERY_ENDPOINT_ROUTE = "/delivery";
-    private static final String PARAM_ID = ":id";
+    private static final String DELIVERY_ENDPOINT_ROUTE = "/delivery";
+    public static final String PARAM_ID = ":id";
 
     private final SimpleService<DeliveryEntity> deliveryService;
 
@@ -52,7 +52,7 @@ public class DeliveryEndpoint implements Endpoint {
      * @return Json formated GetDeliveryResponse object
      */
     @SneakyThrows
-    private String getDelivery(Request request, Response response) {
+    public String getDelivery(Request request, Response response) {
         final long id = Long.parseLong(request.params(PARAM_ID));
 
         final DeliveryEntity deliveryEntity = deliveryService.get(id);
@@ -71,7 +71,7 @@ public class DeliveryEndpoint implements Endpoint {
      * @param response Response of the request
      * @return Json formated GetDeliveryResponse object
      */
-    private String createDelivery(Request request, Response response) {
+    public String createDelivery(Request request, Response response) {
         PostDeliveryRequest postDeliveryRequest = new Gson().fromJson(request.body(), PostDeliveryRequest.class);
 
         DeliveryEntity entity = DeliveryFactory.build(postDeliveryRequest);
