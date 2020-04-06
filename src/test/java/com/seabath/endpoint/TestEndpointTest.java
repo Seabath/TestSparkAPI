@@ -1,16 +1,8 @@
 package com.seabath.endpoint;
 
 import com.google.gson.Gson;
-import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import static com.seabath.endpoint.TestEndpoint.*;
-import java.util.Collections;
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static com.seabath.endpoint.TestEndpoint.PARAM_ID;
 import com.seabath.pojo.entity.TestEntity;
 import com.seabath.pojo.entity.TestRunEntity;
 import com.seabath.pojo.entity.TestSuiteEntity;
@@ -19,38 +11,53 @@ import com.seabath.pojo.test.run.PostStartTestBody;
 import com.seabath.pojo.test.test.GetTestResponse;
 import com.seabath.service.TestService;
 import com.seabath.service.TestSuiteService;
+import java.util.Collections;
+import javassist.NotFoundException;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import spark.Request;
+import spark.Response;
 
-class TestEndpointTest extends AbstractEndPointTest {
+class TestEndpointTest {
 
-    private static TestService mockedTestService;
-    private static TestSuiteService mockedTestSuiteService;
+    private TestService mockedTestService;
+    private TestSuiteService mockedTestSuiteService;
+    private TestEndpoint endpoint;
+    private Request mockedRequest;
+    private Response mockedResponse;
 
-    @BeforeAll
-    public static void initService() {
-        mockedTestService = mock(TestService.class);
-        mockedTestSuiteService = mock(TestSuiteService.class);
-        TestEndpoint endpoint =
-            new TestEndpoint(mockedTestSuiteService, mockedTestService);
-
-        sparkSwagger.endpoint(endpoint);
-    }
 
     @BeforeEach
-    public void resetMocks() {
-        reset(mockedTestService, mockedTestSuiteService);
+    public void initEndpoint() {
+        mockedTestService = mock(TestService.class);
+        mockedTestSuiteService = mock(TestSuiteService.class);
+        this.endpoint =
+            new TestEndpoint(mockedTestSuiteService, mockedTestService);
+        mockedRequest = mock(Request.class);
+        mockedResponse = mock(Response.class);
+
     }
 
 
     @Test
-    public void shouldNotFindSuite() throws UnirestException {
-        final HttpResponse<String> response = testPost(TEST_ENDPOINT_ROUTE + START_ROUTE + "/42", "");
+    public void shouldNotFindSuite() {
+        final Long id = 42L;
 
-        assertThat(response.getStatus())
-            .isEqualTo(404);
+        when(mockedRequest.params(PARAM_ID)).thenReturn(String.valueOf(id));
+        Assertions.assertThrows(
+            NotFoundException.class,
+            () -> endpoint.startTest(mockedRequest, mockedResponse)
+        );
+
+        verify(mockedTestSuiteService, times(1)).get(eq(id));
     }
 
     @Test
-    public void shouldStartTest() throws UnirestException {
+    public void shouldStartTest() {
         final Long idSuite = 42L;
         final String testName = "testname";
         final String packageName = "packagename";
@@ -77,14 +84,13 @@ class TestEndpointTest extends AbstractEndPointTest {
 
         when(mockedTestSuiteService.get(eq(idSuite))).thenReturn(testSuiteEntity);
         when(mockedTestService.startTest(eq(testSuiteEntity), eq(testName), eq(packageName))).thenReturn(testEntity);
-        final HttpResponse<String> response = testPost(TEST_ENDPOINT_ROUTE + START_ROUTE + "/" + idSuite,
-            requestBody);
+        when(mockedRequest.params(eq(PARAM_ID))).thenReturn(String.valueOf(idSuite));
+        when(mockedRequest.body()).thenReturn(new Gson().toJson(requestBody));
 
+        final String response = endpoint.startTest(mockedRequest, mockedResponse);
 
-        assertThat(response.getStatus())
-            .isEqualTo(201);
-        final String responseBody = response.getBody();
-        final GetTestResponse getTestResponse = new Gson().fromJson(responseBody, GetTestResponse.class);
+        verify(mockedResponse, times(1)).status(eq(201));
+        final GetTestResponse getTestResponse = new Gson().fromJson(response, GetTestResponse.class);
         assertThat(getTestResponse)
             .usingRecursiveComparison()
             .isEqualTo(expected);
@@ -92,14 +98,19 @@ class TestEndpointTest extends AbstractEndPointTest {
 
     @Test
     public void shouldNotFindTest() throws UnirestException {
-        final HttpResponse<String> response = testPut(TEST_ENDPOINT_ROUTE + SUCCESS_ROUTE + "/42", "");
+        final Long id = 42L;
 
-        assertThat(response.getStatus())
-            .isEqualTo(404);
+        when(mockedRequest.params(PARAM_ID)).thenReturn(String.valueOf(id));
+        Assertions.assertThrows(
+            NotFoundException.class,
+            () -> endpoint.stopSuccessTest(mockedRequest, mockedResponse)
+        );
+
+        verify(mockedTestService, times(1)).get(eq(id));
     }
 
     @Test
-    public void shouldSucceedTest() throws UnirestException {
+    public void shouldSucceedTest() {
         final Long id = 42L;
         final long testSuiteId = 24L;
         final TestSuiteEntity testSuiteEntity = TestSuiteEntity.builder()
@@ -117,13 +128,12 @@ class TestEndpointTest extends AbstractEndPointTest {
             .build();
 
         when(mockedTestService.get(eq(id))).thenReturn(testEntity);
+        when(mockedRequest.params(eq(PARAM_ID))).thenReturn(String.valueOf(id));
 
-        final HttpResponse<String> response = testPut(TEST_ENDPOINT_ROUTE + SUCCESS_ROUTE + "/" + id, "");
+        final String response = endpoint.stopSuccessTest(mockedRequest, mockedResponse);
 
         verify(mockedTestService, times(1)).succeed(eq(testEntity));
-        assertThat(response.getStatus())
-            .isEqualTo(200);
-        final GetTestResponse body = new Gson().fromJson(response.getBody(), GetTestResponse.class);
+        final GetTestResponse body = new Gson().fromJson(response, GetTestResponse.class);
         assertThat(body)
             .usingRecursiveComparison()
             .isEqualTo(expected);

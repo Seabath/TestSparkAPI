@@ -7,23 +7,23 @@ import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
 import com.seabath.factory.TestFactory;
 import com.seabath.filter.DoNothingFilter;
-import javassist.NotFoundException;
-import lombok.SneakyThrows;
 import com.seabath.pojo.entity.TestEntity;
 import com.seabath.pojo.entity.TestSuiteEntity;
 import com.seabath.pojo.test.run.PostStartTestBody;
 import com.seabath.pojo.test.test.GetTestResponse;
 import com.seabath.service.TestService;
 import com.seabath.service.TestSuiteService;
+import javassist.NotFoundException;
+import lombok.SneakyThrows;
 import spark.Request;
 import spark.Response;
 
 public class TestEndpoint implements Endpoint {
 
-    public static final String TEST_ENDPOINT_ROUTE = "/test";
-    public static final String START_ROUTE = "/start";
-    public static final String SUCCESS_ROUTE = "/success";
-    private static final String PARAM_ID = ":id";
+    private static final String TEST_ENDPOINT_ROUTE = "/test";
+    private static final String START_ROUTE = "/start";
+    private static final String SUCCESS_ROUTE = "/success";
+    public static final String PARAM_ID = ":id";
     private final TestService testService;
     private final TestSuiteService testSuiteService;
 
@@ -55,7 +55,7 @@ public class TestEndpoint implements Endpoint {
      * @return Json formated GetTestResponse object
      */
     @SneakyThrows
-    private String startTest(Request request, Response response) {
+    public String startTest(Request request, Response response) {
         final long id = Long.parseLong(request.params(PARAM_ID));
         final TestSuiteEntity testSuiteEntity = testSuiteService.get(id);
         if (testSuiteEntity == null) {
@@ -81,7 +81,7 @@ public class TestEndpoint implements Endpoint {
      * @return Json formated GetTestResponse object
      */
     @SneakyThrows
-    private String stopSuccessTest(Request request, Response response) {
+    public String stopSuccessTest(Request request, Response response) {
         final long id = Long.parseLong(request.params(PARAM_ID));
         final TestEntity testEntity = testService.get(id);
         if (testEntity == null) {
