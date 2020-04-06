@@ -58,7 +58,8 @@ public class Main {
             new ExceptionEndpoint(),
             new DeliveryEndpoint(deliveryService),
             new TestConfigurationEndpoint(testConfigurationService, deliveryService),
-            new TestSuiteEndpoint(testSuiteService, testConfigurationService)
+            new TestSuiteEndpoint(testSuiteService, testConfigurationService),
+            new TestEndpoint(testSuiteService, testService)
         );
 
 
