@@ -8,13 +8,13 @@ import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
 import com.seabath.factory.TestSuiteFactory;
 import com.seabath.filter.DoNothingFilter;
-import javassist.NotFoundException;
-import lombok.SneakyThrows;
 import com.seabath.pojo.entity.TestConfigurationEntity;
 import com.seabath.pojo.entity.TestSuiteEntity;
 import com.seabath.pojo.test.suite.GetTestSuiteResponse;
 import com.seabath.service.SimpleService;
 import com.seabath.service.TestSuiteService;
+import javassist.NotFoundException;
+import lombok.SneakyThrows;
 import spark.Request;
 import spark.Response;
 
@@ -23,10 +23,10 @@ import spark.Response;
  */
 public class TestSuiteEndpoint implements Endpoint {
 
-    public static final String TEST_SUITE_ENDPOINT_ROUTE = "/suite";
-    public static final String START_ROUTE = "/start";
-    public static final String STOP_ROUTE = "/stop";
-    private static final String PARAM_ID = ":id";
+    private static final String TEST_SUITE_ENDPOINT_ROUTE = "/suite";
+    private static final String START_ROUTE = "/start";
+    private static final String STOP_ROUTE = "/stop";
+    public static final String PARAM_ID = ":id";
     private final TestSuiteService testSuiteService;
     private final SimpleService<TestConfigurationEntity> testConfigurationService;
 
@@ -68,7 +68,7 @@ public class TestSuiteEndpoint implements Endpoint {
      * @return Json formated GetTestSuiteResponse object
      */
     @SneakyThrows
-    private String startSuite(Request request, Response response) {
+    public String startSuite(Request request, Response response) {
         final long id = Long.parseLong(request.params(PARAM_ID));
         final TestConfigurationEntity testConfigurationEntity = testConfigurationService.get(id);
         if (testConfigurationEntity == null) {
@@ -93,7 +93,7 @@ public class TestSuiteEndpoint implements Endpoint {
      * @return Json formated GetTestSuiteResponse object
      */
     @SneakyThrows
-    private String stopSuite(Request request, Response response) {
+    public String stopSuite(Request request, Response response) {
         final long id = Long.parseLong(request.params(PARAM_ID));
         final TestSuiteEntity testSuiteEntity = testSuiteService.get(id);
         if (testSuiteEntity == null) {
