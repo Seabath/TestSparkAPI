@@ -20,6 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.Mockito.*;
+import org.mockito.internal.util.collections.Sets;
 import org.mockito.verification.VerificationMode;
 import pojo.entity.TestEntity;
 import pojo.entity.TestRunEntity;
@@ -53,12 +54,11 @@ class TestServiceTest {
     @ParameterizedTest
     @MethodSource("shouldInterrputTestsSource")
     public void shouldInterruptTests(TestEntity input, VerificationMode verificationMode) {
-
         service.interrupt(input);
 
         assertThat(input.getStatus())
             .isEqualTo(Status.INTERRUPTED);
-        verify(mockedTestRunService, verificationMode).interrupt(any());
+        verify(mockedTestRunService, verificationMode).finish(any(), eq(Status.INTERRUPTED));
     }
 
     private static Stream<Arguments> shouldInterrputTestsSource() {
@@ -88,7 +88,7 @@ class TestServiceTest {
     }
 
     @Test
-    public void shouldStartTestNotFound() {
+    public void shouldStartTestNotExistingTest() {
         final String testName = "testname";
         final String packageName = "packagename";
         final TestSuiteEntity testSuiteEntity = TestSuiteEntity.builder()
@@ -126,7 +126,7 @@ class TestServiceTest {
     }
 
     @Test
-    public void shouldStartTestFound() {
+    public void shouldStartExistingTest() {
         final String testName = "testname";
         final String packageName = "packagename";
         final long isSuite = 42L;
@@ -175,9 +175,38 @@ class TestServiceTest {
     }
 
     @Test
-    public void shouldGetAnException() {
+    public void shouldGetAnExceptionStart() {
         Assertions.assertThrows(NullPointerException.class, () ->
             service.startTest(null, "", ""));
     }
+
+    @Test
+    public void shouldGetAnExceptionSucceed() {
+        Assertions.assertThrows(NullPointerException.class, () ->
+            service.succeed(null));
+    }
+
+    @Test
+    public void shouldSucceedTestEntity() {
+        final TestRunEntity testRunEntity = TestRunEntity.builder()
+            .status(Status.IN_PROGRESS)
+            .build();
+        final TestEntity testEntity = TestEntity.builder()
+            .status(Status.FAIL)
+            .testRunEntities(Sets.newSet(
+                testRunEntity,
+                TestRunEntity.builder()
+                    .status(Status.FAIL)
+                    .build()
+            ))
+            .build();
+
+        service.succeed(testEntity);
+
+        assertThat(testEntity.getStatus())
+            .isEqualTo(Status.FLAKY);
+        verify(mockedTestRunService, only()).finish(eq(testRunEntity), eq(Status.SUCCESS));
+    }
+
 
 }

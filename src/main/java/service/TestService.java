@@ -32,7 +32,7 @@ public class TestService extends SimpleService<TestEntity> {
         testRunEntities.parallelStream()
             .peek(Hibernate::initialize)
             .filter(testRunEntity -> testRunEntity.getStatus() == Status.IN_PROGRESS)
-            .forEach(testRunService::interrupt);
+            .forEach(testRunEntity1 -> testRunService.finish(testRunEntity1, Status.INTERRUPTED));
         testEntity.setStatus(Status.INTERRUPTED);
         this.createOrUpdate(testEntity);
     }
@@ -72,7 +72,32 @@ public class TestService extends SimpleService<TestEntity> {
         return testEntity;
     }
 
-    private TestEntity get(Long id, String testName, String packageName) {
-        return executeQuery(session -> testDAO.find(session, id, testName, packageName));
+    /**
+     * Set status to success, and succeed all test runs linked to given entity.
+     *
+     * @param testEntity entity to succeed
+     */
+    public void succeed(@NonNull TestEntity testEntity) {
+        final Status status = testEntity.getStatus();
+        testEntity.setStatus(status.changeSuccess());
+
+        testEntity.getTestRunEntities()
+            .parallelStream()
+            .peek(Hibernate::initialize)
+            .filter(testRunEntity -> testRunEntity.getStatus() == Status.IN_PROGRESS)
+            .forEach(testRunEntity -> testRunService.finish(testRunEntity, Status.SUCCESS));
+        this.createOrUpdate(testEntity);
+    }
+
+    /**
+     * Get a test entity from a suite with given testName and packageName.
+     *
+     * @param idSuite     Suite's id containing wanted test
+     * @param testName    Name of the test
+     * @param packageName Package name of the test
+     * @return Matching test entity
+     */
+    public TestEntity get(Long idSuite, String testName, String packageName) {
+        return executeQuery(session -> testDAO.find(session, idSuite, testName, packageName));
     }
 }
