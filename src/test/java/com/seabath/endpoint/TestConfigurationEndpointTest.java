@@ -1,49 +1,57 @@
 package com.seabath.endpoint;
 
 import com.google.gson.Gson;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import static com.seabath.endpoint.TestConfigurationEndpoint.TEST_CONFIGURATION_ENDPOINT_ROUTE;
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static com.seabath.endpoint.TestConfigurationEndpoint.PARAM_ID;
 import com.seabath.pojo.delivery.GetDeliveryResponse;
 import com.seabath.pojo.entity.DeliveryEntity;
 import com.seabath.pojo.entity.TestConfigurationEntity;
 import com.seabath.pojo.test.configuration.GetTestConfigurationResponse;
 import com.seabath.pojo.test.configuration.PostTestConfigurationRequest;
 import com.seabath.service.SimpleService;
+import javassist.NotFoundException;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import spark.Request;
+import spark.Response;
 
-class TestConfigurationEndpointTest extends AbstractEndPointTest {
+class TestConfigurationEndpointTest {
 
-    private static SimpleService<DeliveryEntity> mockedDeliveryService;
-    private static SimpleService<TestConfigurationEntity> mockedTestConfigurationService;
+    private SimpleService<DeliveryEntity> mockedDeliveryService;
+    private SimpleService<TestConfigurationEntity> mockedTestConfigurationService;
+    private TestConfigurationEndpoint endpoint;
+    private Request mockedRequest;
+    private Response mockedResponse;
 
-    @BeforeAll
-    public static void initService() {
+
+    @BeforeEach
+    public void initEndpoint() {
         mockedDeliveryService = mock(SimpleService.class);
         mockedTestConfigurationService = mock(SimpleService.class);
-        TestConfigurationEndpoint endpoint =
-            new TestConfigurationEndpoint(mockedTestConfigurationService, mockedDeliveryService);
+        this.endpoint = new TestConfigurationEndpoint(mockedTestConfigurationService, mockedDeliveryService);
+        mockedRequest = mock(Request.class);
+        mockedResponse = mock(Response.class);
 
-        sparkSwagger.endpoint(endpoint);
     }
 
     @Test
-    public void shouldNotGetConfiguration() throws UnirestException {
+    public void shouldNotGetConfiguration() {
+        final Long id = 42L;
 
-        final HttpResponse<String> response = testGet(TEST_CONFIGURATION_ENDPOINT_ROUTE + "/42");
+        when(mockedRequest.params(eq(PARAM_ID))).thenReturn("" + id);
+        Assertions.assertThrows(NotFoundException.class,
+            () -> endpoint.getTestConfiguration(mockedRequest, mockedResponse)
+        );
 
-        assertThat(response.getStatus())
-            .isEqualTo(404);
+        verify(mockedTestConfigurationService, times(1)).get(eq(id));
     }
 
     @Test
-    public void shouldGetConfiguration() throws UnirestException {
+    public void shouldGetConfiguration() {
 
         final long id = 42L;
         final TestConfigurationEntity configurationEntity = TestConfigurationEntity.builder()
@@ -55,29 +63,32 @@ class TestConfigurationEndpointTest extends AbstractEndPointTest {
             .getDeliveryResponse(GetDeliveryResponse.builder().id(id).build())
             .build();
         when(mockedTestConfigurationService.get(eq(id))).thenReturn(configurationEntity);
+        when(mockedRequest.params(eq(PARAM_ID))).thenReturn("" + id);
 
-        final HttpResponse<String> response = testGet(TEST_CONFIGURATION_ENDPOINT_ROUTE + "/" + id);
+        final String response = endpoint.getTestConfiguration(mockedRequest, mockedResponse);
 
-        assertThat(response.getStatus())
-            .isEqualTo(200);
-        assertThat(response.getBody())
+        assertThat(response)
             .isEqualTo(new Gson().toJson(expected));
     }
 
     @Test
-    public void shouldNotCreateConfiguration() throws UnirestException {
+    public void shouldNotCreateConfiguration() {
+        final long id = 42L;
         final PostTestConfigurationRequest configurationRequest = PostTestConfigurationRequest.builder()
-            .deliveryId(42L)
+            .deliveryId(id)
             .build();
+        final String body = new Gson().toJson(configurationRequest);
 
-        final HttpResponse<String> response = testPost(TEST_CONFIGURATION_ENDPOINT_ROUTE, configurationRequest);
+        when(mockedRequest.body()).thenReturn(body);
 
-        assertThat(response.getStatus())
-            .isEqualTo(404);
+        Assertions.assertThrows(
+            NotFoundException.class,
+            () -> endpoint.createTestConfiguration(mockedRequest, mockedResponse)
+        );
     }
 
     @Test
-    public void shouldCreateConfiguration() throws UnirestException {
+    public void shouldCreateConfiguration() {
         final long deliveryId = 42L;
         final DeliveryEntity deliveryEntity = DeliveryEntity.builder()
             .id(deliveryId)
@@ -96,12 +107,13 @@ class TestConfigurationEndpointTest extends AbstractEndPointTest {
 
         when(mockedDeliveryService.get(eq(deliveryId))).thenReturn(deliveryEntity);
         when(mockedTestConfigurationService.create(any())).thenReturn(testConfigurationEntity);
+        when(mockedRequest.params(PARAM_ID)).thenReturn(String.valueOf(deliveryId));
+        when(mockedRequest.body()).thenReturn(new Gson().toJson(configurationRequest));
 
-        final HttpResponse<String> response = testPost(TEST_CONFIGURATION_ENDPOINT_ROUTE, configurationRequest);
+        final String response = endpoint.createTestConfiguration(mockedRequest, mockedResponse);
 
-        assertThat(response.getStatus())
-            .isEqualTo(201);
-        assertThat(response.getBody())
+        verify(mockedResponse, times(1)).status(eq(201));
+        assertThat(response)
             .isEqualTo(new Gson().toJson(expected));
     }
 

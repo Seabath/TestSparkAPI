@@ -7,13 +7,13 @@ import com.beerboy.ss.rest.Endpoint;
 import com.google.gson.Gson;
 import com.seabath.factory.TestConfigurationFactory;
 import com.seabath.filter.DoNothingFilter;
-import javassist.NotFoundException;
-import lombok.SneakyThrows;
 import com.seabath.pojo.entity.DeliveryEntity;
 import com.seabath.pojo.entity.TestConfigurationEntity;
 import com.seabath.pojo.test.configuration.GetTestConfigurationResponse;
 import com.seabath.pojo.test.configuration.PostTestConfigurationRequest;
 import com.seabath.service.SimpleService;
+import javassist.NotFoundException;
+import lombok.SneakyThrows;
 import spark.Request;
 import spark.Response;
 
@@ -22,8 +22,8 @@ import spark.Response;
  */
 public class TestConfigurationEndpoint implements Endpoint {
 
-    public static final String TEST_CONFIGURATION_ENDPOINT_ROUTE = "/configuration";
-    private static final String PARAM_ID = ":id";
+    private static final String TEST_CONFIGURATION_ENDPOINT_ROUTE = "/configuration";
+    public static final String PARAM_ID = ":id";
 
     private final SimpleService<TestConfigurationEntity> testConfigurationService;
     private final SimpleService<DeliveryEntity> deliveryService;
@@ -57,7 +57,7 @@ public class TestConfigurationEndpoint implements Endpoint {
      * @return Json formated GetTestConfigurationResponse object
      */
     @SneakyThrows
-    private String getTestConfiguration(Request request, Response response) {
+    public String getTestConfiguration(Request request, Response response) {
         final long id = Long.parseLong(request.params(PARAM_ID));
 
         final TestConfigurationEntity testConfigurationEntity = testConfigurationService.get(id);
@@ -78,7 +78,7 @@ public class TestConfigurationEndpoint implements Endpoint {
      * @return Json formated GetTestConfigurationResponse object
      */
     @SneakyThrows
-    private String createTestConfiguration(Request request, Response response) {
+    public String createTestConfiguration(Request request, Response response) {
         final PostTestConfigurationRequest postTestConfigurationRequest = new Gson().fromJson(request.body(), PostTestConfigurationRequest.class);
 
         final DeliveryEntity deliveryEntity = deliveryService.get(postTestConfigurationRequest.getDeliveryId());
