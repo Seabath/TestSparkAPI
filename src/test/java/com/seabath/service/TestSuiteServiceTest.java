@@ -2,6 +2,8 @@ package com.seabath.service;
 
 import com.seabath.common.Status;
 import com.seabath.dao.SimpleDAO;
+import com.seabath.pojo.entity.TestEntity;
+import com.seabath.pojo.entity.TestSuiteEntity;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,8 +18,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import org.mockito.verification.VerificationMode;
-import com.seabath.pojo.entity.TestEntity;
-import com.seabath.pojo.entity.TestSuiteEntity;
 
 class TestSuiteServiceTest {
 
@@ -47,10 +47,10 @@ class TestSuiteServiceTest {
     @MethodSource("updateStatusSource")
     public void shouldUpdateStatus(TestSuiteEntity suiteEntity, Status expectedStatus,
                                    VerificationMode verificationMode) {
-
         when(mockedSuiteDAO.saveOrUpdate(eq(mockedSession), eq(suiteEntity))).thenReturn(suiteEntity);
 
         service.updateStatus(suiteEntity);
+
 
         assertThat(suiteEntity.getEndDate())
             .isNotNull();
@@ -98,11 +98,6 @@ class TestSuiteServiceTest {
         interruptedTestEntities.add(
             TestEntity.builder()
                 .status(Status.IN_PROGRESS)
-                .build()
-        );
-        interruptedTestEntities.add(
-            TestEntity.builder()
-                .status(Status.SUCCESS)
                 .build()
         );
         TestSuiteEntity interruptedSuite = TestSuiteEntity.builder()

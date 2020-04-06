@@ -91,7 +91,6 @@ public class TestEndpoint implements Endpoint {
         testService.succeed(testEntity);
 
         final GetTestResponse responseBody = TestFactory.build(testEntity);
-        response.status(200);
         return new Gson().toJson(responseBody);
     }
 }

@@ -3,6 +3,9 @@ package com.seabath.service;
 import com.seabath.common.Status;
 import com.seabath.dao.SimpleDAO;
 import com.seabath.dao.TestDAO;
+import com.seabath.pojo.entity.TestEntity;
+import com.seabath.pojo.entity.TestRunEntity;
+import com.seabath.pojo.entity.TestSuiteEntity;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashSet;
@@ -20,11 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.Mockito.*;
-import org.mockito.internal.util.collections.Sets;
 import org.mockito.verification.VerificationMode;
-import com.seabath.pojo.entity.TestEntity;
-import com.seabath.pojo.entity.TestRunEntity;
-import com.seabath.pojo.entity.TestSuiteEntity;
 
 class TestServiceTest {
 
@@ -52,7 +51,7 @@ class TestServiceTest {
 
 
     @ParameterizedTest
-    @MethodSource("shouldInterrputTestsSource")
+    @MethodSource("shouldInterruptTestsSource")
     public void shouldInterruptTests(TestEntity input, VerificationMode verificationMode) {
         service.interrupt(input);
 
@@ -61,28 +60,29 @@ class TestServiceTest {
         verify(mockedTestRunService, verificationMode).finish(any(), eq(Status.INTERRUPTED));
     }
 
-    private static Stream<Arguments> shouldInterrputTestsSource() {
+    private static Stream<Arguments> shouldInterruptTestsSource() {
         final TestEntity emptyRuns = TestEntity.builder()
             .testRunEntities(Collections.emptySet())
             .build();
-
-        Set<TestRunEntity> testRunEntities = new HashSet<>();
-        testRunEntities.add(
-            TestRunEntity.builder()
-                .status(Status.IN_PROGRESS)
-                .build()
-        );
-        testRunEntities.add(
-            TestRunEntity.builder()
-                .status(Status.FAIL)
-                .build()
-        );
         final TestEntity oneInProgress = TestEntity.builder()
-            .testRunEntities(testRunEntities)
+            .testRunEntities(Collections.singleton(
+                TestRunEntity.builder()
+                    .status(Status.IN_PROGRESS)
+                    .build()
+            ))
+            .build();
+
+        final TestEntity noneInProgress = TestEntity.builder()
+            .testRunEntities(Collections.singleton(
+                TestRunEntity.builder()
+                    .status(Status.FAIL)
+                    .build()
+            ))
             .build();
 
         return Stream.of(
             Arguments.of(emptyRuns, never()), // technicaly shouldn't happen, but just in case
+            Arguments.of(noneInProgress, never()),
             Arguments.of(oneInProgress, only())
         );
     }
@@ -193,8 +193,21 @@ class TestServiceTest {
             .build();
         final TestEntity testEntity = TestEntity.builder()
             .status(Status.FAIL)
-            .testRunEntities(Sets.newSet(
-                testRunEntity,
+            .testRunEntities(Collections.singleton(testRunEntity))
+            .build();
+
+        service.succeed(testEntity);
+
+        assertThat(testEntity.getStatus())
+            .isEqualTo(Status.FLAKY);
+        verify(mockedTestRunService, only()).finish(eq(testRunEntity), eq(Status.SUCCESS));
+    }
+
+    @Test
+    public void shouldSucceedTestEntityNoRunInProgress() {
+        final TestEntity testEntity = TestEntity.builder()
+            .status(Status.FAIL)
+            .testRunEntities(Collections.singleton(
                 TestRunEntity.builder()
                     .status(Status.FAIL)
                     .build()
@@ -205,8 +218,6 @@ class TestServiceTest {
 
         assertThat(testEntity.getStatus())
             .isEqualTo(Status.FLAKY);
-        verify(mockedTestRunService, only()).finish(eq(testRunEntity), eq(Status.SUCCESS));
+        verify(mockedTestRunService, never()).finish(any(), eq(Status.SUCCESS));
     }
-
-
 }

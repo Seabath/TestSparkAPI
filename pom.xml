@@ -18,6 +18,7 @@
                     <excludes>
                         <exclude>com/seabath/pojo/**/*</exclude>
                         <exclude>com/seabath/dao/**/*</exclude>
+                        <exclude>com/seabath/dao/endpoint/LoggerEndpoint</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -130,11 +131,12 @@
                         <param>com.seabath*</param>
                     </targetClasses>
                     <targetTests>
-                        <param>*ServiceTest</param>
+                        <param>com.seabath*</param>
                     </targetTests>
                     <excludedClasses>
                         <excludedClass>com.seabath.dao*</excludedClass>
                         <excludedClass>com.seabath.pojo*</excludedClass>
+                        <excludedClass>com.seabath.endpoint.LoggerEndpoint</excludedClass>
                     </excludedClasses>
                 </configuration>
                 <dependencies>
@@ -233,7 +235,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.21.0</version>
+            <version>2.28.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

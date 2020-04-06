@@ -106,7 +106,7 @@ class TestConfigurationEndpointTest {
             .build();
 
         when(mockedDeliveryService.get(eq(deliveryId))).thenReturn(deliveryEntity);
-        when(mockedTestConfigurationService.create(any())).thenReturn(testConfigurationEntity);
+        when(mockedTestConfigurationService.create(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
         when(mockedRequest.params(PARAM_ID)).thenReturn(String.valueOf(deliveryId));
         when(mockedRequest.body()).thenReturn(new Gson().toJson(configurationRequest));
 

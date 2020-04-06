@@ -104,13 +104,15 @@ class TestSuiteEndpointTest {
     @Test
     public void shouldStopSuite() {
         final long idTestConfig = 42L;
-        TestSuiteEntity testSuiteEntity = mock(TestSuiteEntity.class);
+        TestSuiteEntity testSuiteEntity = TestSuiteEntity.builder().build();
 
         when(mockedTestSuiteService.get(eq(idTestConfig))).thenReturn(testSuiteEntity);
         when(mockedRequest.params(PARAM_ID)).thenReturn(String.valueOf(idTestConfig));
 
-        endpoint.stopSuite(mockedRequest, mockedResponse);
+        final String response = endpoint.stopSuite(mockedRequest, mockedResponse);
 
         verify(mockedTestSuiteService, times(1)).updateStatus(eq(testSuiteEntity));
+        assertThat(response)
+            .isEqualTo(new Gson().toJson(testSuiteEntity));
     }
 }

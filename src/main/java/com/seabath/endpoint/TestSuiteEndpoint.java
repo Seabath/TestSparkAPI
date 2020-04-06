@@ -103,7 +103,6 @@ public class TestSuiteEndpoint implements Endpoint {
         testSuiteService.updateStatus(testSuiteEntity);
 
         final GetTestSuiteResponse getTestSuiteResponse = TestSuiteFactory.build(testSuiteEntity);
-        response.status(200);
         return new Gson().toJson(getTestSuiteResponse);
     }
 }

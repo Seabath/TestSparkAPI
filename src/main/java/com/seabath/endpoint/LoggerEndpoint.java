@@ -5,7 +5,6 @@ import com.beerboy.ss.rest.Endpoint;
 import com.seabath.filter.AfterAfterRouteFilter;
 import com.seabath.filter.BeforeRouteFilter;
 import org.apache.logging.log4j.Logger;
-import spark.Service;
 
 public class LoggerEndpoint implements Endpoint {
 
@@ -18,9 +17,7 @@ public class LoggerEndpoint implements Endpoint {
 
     @Override
     public void bind(SparkSwagger sparkSwagger) {
-        final Service spark = sparkSwagger.getSpark();
-
-        spark.before(new BeforeRouteFilter(logger));
-        spark.afterAfter(new AfterAfterRouteFilter(logger));
+        sparkSwagger.before(new BeforeRouteFilter(logger));
+        sparkSwagger.after(new AfterAfterRouteFilter(logger));
     }
 }

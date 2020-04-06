@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import javassist.NotFoundException;
 import spark.Request;
 import spark.Response;
-import spark.Service;
 
 /**
  * Endpoint that handles all exceptions thrown by services.
@@ -16,10 +15,8 @@ public class ExceptionEndpoint implements Endpoint {
 
     @Override
     public void bind(SparkSwagger sparkSwagger) {
-        final Service spark = sparkSwagger.getSpark();
-
-        spark.exception(NotFoundException.class, this::handleNotFound);
-        spark.exception(Exception.class, this::handleDefaultException);
+        sparkSwagger.exception(NotFoundException.class, this::handleNotFound);
+        sparkSwagger.exception(Exception.class, this::handleDefaultException);
     }
 
 
@@ -30,7 +27,7 @@ public class ExceptionEndpoint implements Endpoint {
      * @param request  Request java object.
      * @param response Response java object.
      */
-    public void handleNotFound(NotFoundException t, Request request, Response response) {
+    public void handleNotFound(Exception t, Request request, Response response) {
         response.status(404);
         response.body(new Gson().toJson(t.getMessage() + " not found."));
     }

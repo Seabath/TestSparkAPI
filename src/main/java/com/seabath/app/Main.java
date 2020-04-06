@@ -5,11 +5,6 @@ import com.beerboy.ss.rest.Endpoint;
 import com.seabath.dao.SimpleDAO;
 import com.seabath.dao.TestDAO;
 import com.seabath.endpoint.*;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.seabath.pojo.entity.DeliveryEntity;
 import com.seabath.pojo.entity.TestConfigurationEntity;
 import com.seabath.pojo.entity.TestRunEntity;
@@ -18,6 +13,10 @@ import com.seabath.service.SimpleService;
 import com.seabath.service.TestRunService;
 import com.seabath.service.TestService;
 import com.seabath.service.TestSuiteService;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import spark.Service;
 import static spark.Service.ignite;
 
@@ -63,22 +62,11 @@ public class Main {
         );
 
 
-        final SparkSwagger sparkSwagger = SparkSwagger.of(sparkService, SparkSwagger.CONF_FILE_NAME)
+        SparkSwagger.of(sparkService, SparkSwagger.CONF_FILE_NAME)
             .endpoints(() -> endpoints);
-
-        generateDoc(sparkSwagger);
 
 
         logger.trace("Spark service started");
-    }
-
-
-    static void generateDoc(SparkSwagger sparkSwagger) {
-        try {
-            sparkSwagger.generateDoc();
-        } catch (IOException e) {
-            logger.error("Error while generating swagger.", e);
-        }
     }
 
     static void stopServer() {

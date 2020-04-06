@@ -75,6 +75,7 @@ class SimpleServiceTest {
 
         assertThat(result)
             .isEqualTo(expected);
+        verify(mockedTransaction, times(1)).commit();
     }
 
     @Test
@@ -86,6 +87,7 @@ class SimpleServiceTest {
 
         assertThat(result)
             .isEqualTo(expected);
+        verify(mockedTransaction, times(1)).commit();
     }
 
     @Test
@@ -97,6 +99,7 @@ class SimpleServiceTest {
 
         assertThat(result)
             .isEqualTo(expected);
+        verify(mockedTransaction, times(1)).commit();
     }
 
     @Test
@@ -110,6 +113,7 @@ class SimpleServiceTest {
 
         assertThat(result)
             .isEqualTo(expected);
+        verify(mockedTransaction, times(1)).commit();
     }
 
 

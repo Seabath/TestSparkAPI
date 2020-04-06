@@ -1,5 +1,6 @@
 package com.seabath.endpoint;
 
+import com.beerboy.ss.SparkSwagger;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,14 @@ class ExceptionEndpointTest {
         endpoint = new ExceptionEndpoint();
         mockedRequest = mock(Request.class);
         mockedResponse = mock(Response.class);
+    }
+
+    @Test
+    public void shouldBindExceptions() {
+        final SparkSwagger mockedSparkSwagger = mock(SparkSwagger.class);
+        endpoint.bind(mockedSparkSwagger);
+
+        verify(mockedSparkSwagger, times(2)).exception(any(), any());
     }
 
     @Test

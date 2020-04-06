@@ -1,29 +1,38 @@
 package com.seabath.app;
 
-import com.beerboy.ss.SparkSwagger;
-import java.io.IOException;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
+import spark.Service;
 
 class MainTest {
 
+    public static final String TEST_URL = "http://localhost:" + Service.SPARK_DEFAULT_PORT;
+
     @Test
-    public void shouldPassMain() {
+    public void shouldPassMain() throws UnirestException {
         Main.main(null);
+
+        final HttpResponse<String> response = Unirest.get(TEST_URL)
+            .asString();
+
+        assertThat(response.getStatus())
+            .isEqualTo(200);
+
         Main.stopServer();
+
+        Assertions.assertThrows(
+            UnirestException.class,
+            () -> Unirest.get(TEST_URL)
+                .asString()
+        );
     }
 
     @Test
     public void shouldInstanciateMain() {
         new Main();
-    }
-
-    @Test
-    public void shouldGetExceptionWhileGeneratingDoc() throws IOException {
-        final SparkSwagger mockedSparkSwagger = mock(SparkSwagger.class);
-        doThrow(new IOException()).when(mockedSparkSwagger).generateDoc();
-
-        Main.generateDoc(mockedSparkSwagger);
     }
 }
