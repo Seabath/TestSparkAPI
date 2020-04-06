@@ -18,7 +18,7 @@ Usage
 -
 To use this API, you can build the [dockerfile](Dockerfile) and run the image on your favorite server.
 
-According to [this file](src/main/java/dao/SimpleDAO.java), you can see that database url, user and password must be 
+According to [this file](src/main/java/com/seabath/dao/SimpleDAO.java), you can see that database url, user and password must be 
 defined as environment variables. So when running your image, don't forget to put those credentials in your container.
 You can see [here](docker-compose.yaml) an example of how to use it with docker-compose.
 
@@ -37,5 +37,7 @@ And according to `getSessionFactory`method, if a problem must occur, it will be 
 fix.
 
 To record test coverage, I use jacoco; `mvn jacoco:report`.
+
+Mutation testing is performed by pitest; `mvn  org.pitest:pitest-maven:mutationCoverage`.
 
 
