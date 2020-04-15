@@ -1,10 +1,10 @@
 package com.seabath.factory;
 
 import com.seabath.common.Status;
-import java.util.Date;
 import com.seabath.pojo.entity.TestConfigurationEntity;
 import com.seabath.pojo.entity.TestSuiteEntity;
 import com.seabath.pojo.test.suite.GetTestSuiteResponse;
+import java.util.Date;
 /**
  * Factory to build TestSuiteEntity and response bodys related to TestSuiteEntity
  */
@@ -38,12 +38,12 @@ public class TestSuiteFactory {
         if (testSuiteEntity == null) {
             return null;
         }
-        return GetTestSuiteResponse.builder()
-            .id(testSuiteEntity.getId())
-            .startDate(testSuiteEntity.getStartDate())
-            .endDate(testSuiteEntity.getEndDate())
-            .status(testSuiteEntity.getStatus())
-            .getTestConfigurationResponse(TestConfigurationFactory.build(testSuiteEntity.getTestConfigurationEntity()))
-            .build();
+        return new GetTestSuiteResponse(
+            testSuiteEntity.getId(),
+            testSuiteEntity.getStartDate(),
+            testSuiteEntity.getEndDate(),
+            testSuiteEntity.getStatus(),
+            TestConfigurationFactory.build(testSuiteEntity.getTestConfigurationEntity())
+        );
     }
 }

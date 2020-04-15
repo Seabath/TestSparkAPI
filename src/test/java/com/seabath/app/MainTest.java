@@ -13,16 +13,17 @@ class MainTest {
     public static final String TEST_URL = "http://localhost:" + Service.SPARK_DEFAULT_PORT;
 
     @Test
-    public void shouldPassMain() throws UnirestException {
+    public void shouldPassMain() throws UnirestException, InterruptedException {
         Main.main(null);
 
-        final HttpResponse<String> response = Unirest.get(TEST_URL)
+        HttpResponse<String> response = Unirest.get(TEST_URL)
             .asString();
 
         assertThat(response.getStatus())
             .isEqualTo(200);
 
         Main.stopServer();
+        Thread.sleep(10000);
 
         Assertions.assertThrows(
             UnirestException.class,

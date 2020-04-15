@@ -1,9 +1,9 @@
 package com.seabath.factory;
 
-import java.util.Date;
 import com.seabath.pojo.delivery.GetDeliveryResponse;
 import com.seabath.pojo.delivery.PostDeliveryRequest;
 import com.seabath.pojo.entity.DeliveryEntity;
+import java.util.Date;
 
 /**
  * Factory to build DeliveryEntity and response bodys related to DeliveryEntity
@@ -22,9 +22,9 @@ public class DeliveryFactory {
         }
         return DeliveryEntity.builder()
             .date(new Date())
-            .path(postDeliveryRequest.getPath())
-            .version(postDeliveryRequest.getVersion())
-            .platform(postDeliveryRequest.getPlatform())
+            .path(postDeliveryRequest.path())
+            .version(postDeliveryRequest.version())
+            .platform(postDeliveryRequest.platform())
             .build();
     }
 
@@ -38,12 +38,12 @@ public class DeliveryFactory {
         if (deliveryEntity == null) {
             return null;
         }
-        return GetDeliveryResponse.builder()
-            .date(deliveryEntity.getDate())
-            .path(deliveryEntity.getPath())
-            .version(deliveryEntity.getVersion())
-            .platform(deliveryEntity.getPlatform())
-            .id(deliveryEntity.getId())
-            .build();
+        return new GetDeliveryResponse(
+            deliveryEntity.getId(),
+            deliveryEntity.getVersion(),
+            deliveryEntity.getPlatform(),
+            deliveryEntity.getPath(),
+            deliveryEntity.getDate()
+        );
     }
 }

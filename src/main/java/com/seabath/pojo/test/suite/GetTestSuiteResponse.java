@@ -1,17 +1,9 @@
 package com.seabath.pojo.test.suite;
 
 import com.seabath.common.Status;
-import java.util.Date;
-import lombok.Builder;
-import lombok.Getter;
 import com.seabath.pojo.test.configuration.GetTestConfigurationResponse;
+import java.util.Date;
 
-@Getter
-@Builder
-public class GetTestSuiteResponse {
-    private Long id;
-    private Date startDate;
-    private Date endDate;
-    private Status status;
-    private GetTestConfigurationResponse getTestConfigurationResponse;
+public record GetTestSuiteResponse(Long id, Date startDate, Date endDate, Status status,
+                                   GetTestConfigurationResponse getTestConfigurationResponse) {
 }

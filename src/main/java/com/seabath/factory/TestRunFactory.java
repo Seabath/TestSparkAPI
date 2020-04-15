@@ -8,11 +8,11 @@ public class TestRunFactory {
         if (testEntity == null) {
             return null;
         }
-        return GetTestRunResponse.builder()
-            .id(testEntity.getId())
-            .endDate(testEntity.getEndDate())
-            .startDate(testEntity.getStartDate())
-            .status(testEntity.getStatus())
-            .build();
+        return new GetTestRunResponse(
+            testEntity.getId(),
+            testEntity.getStartDate(),
+            testEntity.getEndDate(),
+            testEntity.getStatus()
+        );
     }
 }

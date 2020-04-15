@@ -1,14 +1,4 @@
 package com.seabath.pojo.delivery;
 
-import lombok.Builder;
-import lombok.Getter;
-
-@Getter
-@Builder
-public class PostDeliveryRequest {
-
-    private String version;
-    private String platform;
-    private String path;
-
+public record PostDeliveryRequest(String version, String platform, String path) {
 }

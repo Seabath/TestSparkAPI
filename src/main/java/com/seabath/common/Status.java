@@ -41,7 +41,7 @@ public enum Status {
      * Field used to compare status one with another.
      */
     @Getter
-    private int value;
+    private final int value;
 
     Status(int value) {
         this.value = value;

@@ -81,7 +81,7 @@ public class TestConfigurationEndpoint implements Endpoint {
     public String createTestConfiguration(Request request, Response response) {
         final PostTestConfigurationRequest postTestConfigurationRequest = new Gson().fromJson(request.body(), PostTestConfigurationRequest.class);
 
-        final DeliveryEntity deliveryEntity = deliveryService.get(postTestConfigurationRequest.getDeliveryId());
+        final DeliveryEntity deliveryEntity = deliveryService.get(postTestConfigurationRequest.deliveryId());
         if (deliveryEntity == null) {
             throw new NotFoundException("Delivery");
         }

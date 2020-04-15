@@ -61,10 +61,10 @@ class TestEndpointTest {
         final Long idSuite = 42L;
         final String testName = "testname";
         final String packageName = "packagename";
-        final PostStartTestBody requestBody = PostStartTestBody.builder()
-            .packageName(packageName)
-            .testName(testName)
-            .build();
+        final PostStartTestBody requestBody = new PostStartTestBody(
+            testName,
+            packageName
+        );
         final TestSuiteEntity testSuiteEntity = TestSuiteEntity.builder()
             .id(idSuite)
             .build();
@@ -75,12 +75,14 @@ class TestEndpointTest {
             .testRunEntities(Collections.singleton(TestRunEntity.builder().build()))
             .build();
 
-        GetTestResponse expected = GetTestResponse.builder()
-            .testSuiteId(idSuite)
-            .packageName(packageName)
-            .testName(testName)
-            .testRuns(Collections.singleton(GetTestRunResponse.builder().build()))
-            .build();
+        GetTestResponse expected = new GetTestResponse(
+            null,
+            testName,
+            packageName,
+            null,
+            idSuite,
+            Collections.singleton(new GetTestRunResponse(null, null, null, null))
+        );
 
         when(mockedTestSuiteService.get(eq(idSuite))).thenReturn(testSuiteEntity);
         when(mockedTestService.startTest(eq(testSuiteEntity), eq(testName), eq(packageName))).thenReturn(testEntity);
@@ -121,11 +123,14 @@ class TestEndpointTest {
             .testRunEntities(Collections.emptySet())
             .testSuiteEntity(testSuiteEntity)
             .build();
-        final GetTestResponse expected = GetTestResponse.builder()
-            .id(id)
-            .testSuiteId(testSuiteId)
-            .testRuns(Collections.emptySet())
-            .build();
+        final GetTestResponse expected = new GetTestResponse(
+            id,
+            null,
+            null,
+            null,
+            testSuiteId,
+            Collections.emptySet()
+        );
 
         when(mockedTestService.get(eq(id))).thenReturn(testEntity);
         when(mockedRequest.params(eq(PARAM_ID))).thenReturn(String.valueOf(id));

@@ -1,10 +1,10 @@
 package com.seabath.factory;
 
-import java.util.Collections;
 import com.seabath.pojo.entity.DeliveryEntity;
 import com.seabath.pojo.entity.TestConfigurationEntity;
 import com.seabath.pojo.test.configuration.GetTestConfigurationResponse;
 import com.seabath.pojo.test.configuration.PostTestConfigurationRequest;
+import java.util.Collections;
 
 /**
  * Factory to build TestConfigurationEntity and response bodys related to TestConfigurationEntity
@@ -24,8 +24,8 @@ public class TestConfigurationFactory {
         }
         return TestConfigurationEntity.builder()
             .deliveryEntity(deliveryEntity)
-            .env(postTestConfigurationRequest.getEnv())
-            .statusMini(postTestConfigurationRequest.getStatusMini())
+            .env(postTestConfigurationRequest.env())
+            .statusMini(postTestConfigurationRequest.statusMini())
             .testSuiteEntities(Collections.emptySet())
             .build();
     }
@@ -40,12 +40,11 @@ public class TestConfigurationFactory {
         if (testConfigurationEntity == null) {
             return null;
         }
-        return GetTestConfigurationResponse.builder()
-            .id(testConfigurationEntity.getId())
-            .getDeliveryResponse(DeliveryFactory.build(testConfigurationEntity.getDeliveryEntity()))
-            .env(testConfigurationEntity.getEnv())
-            .statusMini(testConfigurationEntity.getStatusMini())
-            .build();
-
+        return new GetTestConfigurationResponse(
+            testConfigurationEntity.getId(),
+            testConfigurationEntity.getStatusMini(),
+            DeliveryFactory.build(testConfigurationEntity.getDeliveryEntity()),
+            testConfigurationEntity.getEnv()
+        );
     }
 }

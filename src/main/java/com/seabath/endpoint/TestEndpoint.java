@@ -63,7 +63,7 @@ public class TestEndpoint implements Endpoint {
         }
         final PostStartTestBody body = new Gson().fromJson(request.body(), PostStartTestBody.class);
 
-        final TestEntity testEntity = testService.startTest(testSuiteEntity, body.getTestName(), body.getPackageName());
+        final TestEntity testEntity = testService.startTest(testSuiteEntity, body.testName(), body.packageName());
 
         final GetTestResponse responseBody = TestFactory.build(testEntity);
 

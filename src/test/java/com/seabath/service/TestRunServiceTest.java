@@ -13,15 +13,12 @@ import com.seabath.pojo.entity.TestRunEntity;
 
 class TestRunServiceTest {
 
-
     private TestRunService service;
-    private SimpleDAO<TestRunEntity> mockedDAO;
-    private Session mockedSession;
 
     @BeforeEach
     public void initService() throws NoSuchFieldException, IllegalAccessException {
-        mockedDAO = mock(SimpleDAO.class);
-        mockedSession = mock(Session.class);
+        SimpleDAO<TestRunEntity> mockedDAO = mock(SimpleDAO.class);
+        Session mockedSession = mock(Session.class);
         service = spy(new TestRunService(mockedDAO));
 
         SessionFactory mockedSessionFactory = mock(SessionFactory.class);

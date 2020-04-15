@@ -13,7 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import spark.Request;
 import spark.Response;
@@ -40,16 +39,19 @@ class DeliveryEndpointTest {
         String path = "path";
         String version = "version";
         String platform = "platform";
-        PostDeliveryRequest request = PostDeliveryRequest.builder()
-            .path(path)
-            .version(version)
-            .platform(platform)
-            .build();
-        GetDeliveryResponse expectedBody = GetDeliveryResponse.builder()
-            .path(path)
-            .platform(platform)
-            .version(version)
-            .build();
+        PostDeliveryRequest request = new PostDeliveryRequest(
+            version,
+            platform,
+            path
+        );
+
+        GetDeliveryResponse expectedBody = new GetDeliveryResponse(
+            null,
+            version,
+            platform,
+            path,
+            null
+        );
 
 
         when(mockedRequest.body()).thenReturn(new Gson().toJson(request));
@@ -74,13 +76,13 @@ class DeliveryEndpointTest {
             .version("version")
             .platform("platform")
             .build();
-        GetDeliveryResponse expectedBody = GetDeliveryResponse.builder()
-            .date(entity.getDate())
-            .id(entity.getId())
-            .path(entity.getPath())
-            .version(entity.getVersion())
-            .platform(entity.getPlatform())
-            .build();
+        GetDeliveryResponse expectedBody = new GetDeliveryResponse(
+            entity.getId(),
+            entity.getVersion(),
+            entity.getPlatform(),
+            entity.getPath(),
+            entity.getDate()
+        );
 
         when(mockedService.get(eq(id))).thenReturn(entity);
         when(mockedRequest.params(PARAM_ID)).thenReturn("" + id);

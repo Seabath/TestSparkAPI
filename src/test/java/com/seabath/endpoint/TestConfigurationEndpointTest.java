@@ -58,10 +58,12 @@ class TestConfigurationEndpointTest {
             .id(id)
             .deliveryEntity(DeliveryEntity.builder().id(id).build())
             .build();
-        final GetTestConfigurationResponse expected = GetTestConfigurationResponse.builder()
-            .id(id)
-            .getDeliveryResponse(GetDeliveryResponse.builder().id(id).build())
-            .build();
+        final GetTestConfigurationResponse expected = new GetTestConfigurationResponse(
+            id,
+            null,
+            new GetDeliveryResponse(id, null, null, null, null),
+            null
+        );
         when(mockedTestConfigurationService.get(eq(id))).thenReturn(configurationEntity);
         when(mockedRequest.params(eq(PARAM_ID))).thenReturn("" + id);
 
@@ -74,9 +76,11 @@ class TestConfigurationEndpointTest {
     @Test
     public void shouldNotCreateConfiguration() {
         final long id = 42L;
-        final PostTestConfigurationRequest configurationRequest = PostTestConfigurationRequest.builder()
-            .deliveryId(id)
-            .build();
+        final PostTestConfigurationRequest configurationRequest = new PostTestConfigurationRequest(
+            id,
+            null,
+            null
+        );
         final String body = new Gson().toJson(configurationRequest);
 
         when(mockedRequest.body()).thenReturn(body);
@@ -93,17 +97,17 @@ class TestConfigurationEndpointTest {
         final DeliveryEntity deliveryEntity = DeliveryEntity.builder()
             .id(deliveryId)
             .build();
-        final PostTestConfigurationRequest configurationRequest = PostTestConfigurationRequest.builder()
-            .deliveryId(deliveryId)
-            .build();
-        final TestConfigurationEntity testConfigurationEntity = TestConfigurationEntity.builder()
-            .deliveryEntity(deliveryEntity)
-            .build();
-        final GetTestConfigurationResponse expected = GetTestConfigurationResponse.builder()
-            .getDeliveryResponse(GetDeliveryResponse.builder()
-                .id(deliveryId)
-                .build())
-            .build();
+        final PostTestConfigurationRequest configurationRequest = new PostTestConfigurationRequest(
+            deliveryId,
+            null,
+            null
+        );
+        final GetTestConfigurationResponse expected = new GetTestConfigurationResponse(
+            null,
+            null,
+            new GetDeliveryResponse(deliveryId, null, null, null, null),
+            null
+        );
 
         when(mockedDeliveryService.get(eq(deliveryId))).thenReturn(deliveryEntity);
         when(mockedTestConfigurationService.create(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));

@@ -26,7 +26,7 @@ public class SimpleDAO<T extends Serializable> {
 
     private static SessionFactory sessionFactory;
 
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     public SimpleDAO(Class<T> clazz) {
         this.clazz = clazz;

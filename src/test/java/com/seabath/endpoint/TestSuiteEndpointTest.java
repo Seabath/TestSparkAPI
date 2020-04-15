@@ -61,14 +61,18 @@ class TestSuiteEndpointTest {
             .env(env)
             .build();
 
-        final GetTestSuiteResponse expected = GetTestSuiteResponse.builder()
-            .getTestConfigurationResponse(GetTestConfigurationResponse.builder()
-                .env(env)
-                .statusMini(statusMini)
-                .id(idTestConfig)
-                .build())
-            .status(Status.IN_PROGRESS)
-            .build();
+        final GetTestSuiteResponse expected = new GetTestSuiteResponse(
+            null,
+            null,
+            null,
+            Status.IN_PROGRESS,
+            new GetTestConfigurationResponse(
+                idTestConfig,
+                statusMini,
+                null,
+                env
+            )
+        );
         when(mockedTestConfigurationService.get(eq(idTestConfig))).thenReturn(testConfigurationEntity);
         when(mockedRequest.params(PARAM_ID)).thenReturn(String.valueOf(idTestConfig));
 
@@ -76,12 +80,12 @@ class TestSuiteEndpointTest {
 
         final GetTestSuiteResponse actual = new Gson().fromJson(response, GetTestSuiteResponse.class);
         verify(mockedResponse, times(1)).status(eq(201));
-        assertThat(actual.getStatus())
-            .isEqualTo(expected.getStatus());
-        assertThat(actual.getStartDate())
+        assertThat(actual.status())
+            .isEqualTo(expected.status());
+        assertThat(actual.startDate())
             .isNotNull();
-        assertThat(actual.getGetTestConfigurationResponse())
-            .isEqualToComparingFieldByField(expected.getGetTestConfigurationResponse());
+        assertThat(actual.getTestConfigurationResponse())
+            .isEqualToComparingFieldByField(expected.getTestConfigurationResponse());
     }
 
 
