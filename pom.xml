@@ -101,6 +101,8 @@
                 <configuration>
                     <release>14</release>
                     <compilerArgs>--enable-preview</compilerArgs>
+                    <source>13</source>
+                    <target>13</target>
                 </configuration>
             </plugin>
             <plugin>

@@ -1,7 +1,6 @@
 package com.seabath.endpoint;
 
 import com.google.gson.Gson;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import static com.seabath.endpoint.TestEndpoint.PARAM_ID;
 import com.seabath.pojo.entity.TestEntity;
 import com.seabath.pojo.entity.TestRunEntity;
@@ -17,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import spark.Request;
 import spark.Response;
@@ -99,7 +97,7 @@ class TestEndpointTest {
     }
 
     @Test
-    public void shouldNotFindTest() throws UnirestException {
+    public void shouldNotFindTest() {
         final Long id = 42L;
 
         when(mockedRequest.params(PARAM_ID)).thenReturn(String.valueOf(id));

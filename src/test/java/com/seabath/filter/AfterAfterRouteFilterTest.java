@@ -2,7 +2,6 @@ package com.seabath.filter;
 
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import spark.Request;
 import spark.Response;

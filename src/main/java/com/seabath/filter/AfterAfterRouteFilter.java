@@ -18,8 +18,11 @@ public class AfterAfterRouteFilter implements Filter {
 
     @Override
     public void handle(Request request, Response response) {
-        final String formatedLog = String.format("Response for %s at route %s\nRequest body: %s" +
-                "\nResponse status: %s\nResponse body: %s", request.requestMethod(),
+        final String formatedLog = String.format("""
+                Response for %s at route %s
+                Request body: %s
+                Response status: %s
+                Response body: %s""", request.requestMethod(),
             request.pathInfo(), request.body(), response.status(), response.body());
 
         logger.info(formatedLog);
